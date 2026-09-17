@@ -11,6 +11,9 @@ RUN apk add --no-cache \
     zip \
     opcache
 
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 ENV APP_ENV=prod \
     APP_DEBUG=0 \
     CADDY_GLOBAL_OPTIONS="auto_https off" \
