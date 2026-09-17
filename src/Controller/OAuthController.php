@@ -80,7 +80,6 @@ final class OAuthController extends AbstractController
 
         try {
             $gUser = $client->fetchUser();
-            dd($gUser);
         } catch (Exception $e) {
             $this->addFlash('error', 'Facebook authentication failed: ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
@@ -98,7 +97,6 @@ final class OAuthController extends AbstractController
             $user->setRoles(['ROLE_USER']);
             $user->setFirstName($gUser->getFirstName());
             $user->setSurname($gUser->getLastName());
-            $user->setAvatar($gUser->getAvatar());
             $user->setIsVerified(true);
             $user->setPassword(bin2hex(random_bytes(32)));
         }
