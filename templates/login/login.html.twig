@@ -3,39 +3,53 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow" style="max-width: 420px; width: 100%;">
+        <div class="card-body p-4">
+            <h4 class="text-center mb-4">Log in to your account</h4>
+            {% if app.user %}
+                <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a></div>
+                </div>
+                    
+            {% endif %}
+
+            {% if error %}
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-exclamation-circle-fill mt-1"></i>
+                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                </div>
+            {% endif %}
+
+            <div class="d-grid gap-2 mb-3">
+                <a href="{{ path('connect_google_start') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2">
+                    <i class="bi bi-google"></i> Log in with Google
+                </a>
+                <a href="{{ path('connect_facebook_start') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2">
+                    <i class="bi bi-facebook"></i> Log in with Facebook
+                </a>
+                
             </div>
-        {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+            <hr class="my-4">
 
-        {#
-            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-            See https://symfony.com/doc/current/security/remember_me.html
+            <form method="post">
+                <div class="mb-3">
+                    <label for="inputEmail" class="form-label">Email address</label>
+                    <input type="email" id="inputEmail" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword" class="form-label">Password</label>
+                    <input type="password" id="inputPassword" name="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Log in</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-            <div class="checkbox mb-3">
-                <input type="checkbox" name="_remember_me" id="_remember_me">
-                <label for="_remember_me">Remember me</label>
-            </div>
-        #}
-
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
-
-    <h1>Connect with google <a href="{{ path('connect_google_start') }}">Go</a> </h1>
-    <h1>Connect with Facebook <a href="{{ path('connect_facebook_start') }}">Go</a> </h1>
+            
+        
 {% endblock %}

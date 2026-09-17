@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\UserRoleEnum;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -54,21 +55,20 @@ final class OAuthController extends AbstractController
         if (!$user) {
             $user = new User();
             $user->setEmail($email);
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles([UserRoleEnum::Candidate->value]);
             $user->setFirstName($gUser->getFirstName());
             $user->setSurname($gUser->getLastName());
-            $user->setAvatar($gUser->getAvatar());
             $user->setIsVerified(true);
             $user->setPassword(bin2hex(random_bytes(32)));
+            $entityManager->persist($user);
+            $entityManager->flush();
         }
-
-        $entityManager->persist($user);
-        $entityManager->flush();
 
         $security->login($user);
 
         return $this->redirectToRoute('app_home');
     }
+    
     #[Route('/connect/facebook/check', name: 'connect_facebook_check')]
     public function connectFacebookCheck(
         ClientRegistry $clientRegistry,
