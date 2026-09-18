@@ -28,11 +28,11 @@ final class AttributeController extends AbstractController
     public function new(Request $request, EntityManagerInterface $manager): Response
     {
         $attr = new AttributeCv();
-        $form = $this->createForm(AttributeType::class,$attr);
-        
+        $form = $this->createForm(AttributeType::class, $attr);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            
+
             $this->addFlash('notice', 'New attribute has been added');
             $manager->persist($attr);
             $manager->flush();
@@ -46,26 +46,59 @@ final class AttributeController extends AbstractController
             'form' => $form
         ]);
     }
-    
+
     #[Route('/attribute/{id<\d+>}/edit', name: 'app_attribute_edit')]
     public function edit(AttributeCv $attr, Request $request, EntityManagerInterface $manager): Response
     {
-        $form = $this->createForm(AttributeType::class,$attr);
+        $form = $this->createForm(AttributeType::class, $attr);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
 
             $manager->flush();
 
-            $this->addFlash('notice','The attribute has been edited');
+            $this->addFlash('notice', 'The attribute has been edited');
 
             return $this->redirectToRoute('app_attributes');
         }
 
-        return $this->render('attribute/edit.html.twig',[
-            'form'=>$form
+        return $this->render('attribute/edit.html.twig', [
+            'form' => $form
         ]);
+    }
+    #[Route('/attribute/delete', name: 'app_attribute_delete_all')]
+    public function deleteAll(Request $request, EntityManagerInterface $manager): Response
+    {
+        $ids = $request->request->all('selectedAttr');
+        if (!empty($ids)) {
+            $repository = $manager->getRepository(AttributeCv::class);
+            
+            $attributes = $repository->findBy(['id' => $ids]);
 
+            foreach ($attributes as $attribute) {
+                $manager->remove($attribute);
+            }
+
+            $manager->flush();
+            $this->addFlash('success', count($attributes) . ' attribute(s) deleted successfully.');
+        }
+        return $this->redirect('app_attributes');
+
+    }
+    #[Route('/attribute/{id<\d+>}/delete', name: 'app_attribute_delete')]
+    public function delete(AttributeCv $attr, Request $request, EntityManagerInterface $manager): Response
+    {
+        if ($request->isMethod('POST')) {
+            $manager->remove($attr);
+            $manager->flush();
+
+            $this->addFlash('notice', 'Product deleted successfully');
+            return $this->redirectToRoute('product_index');
+        }
+
+        return $this->render('product/delete.html.twig', [
+            'id' => $attr->getId()
+        ]);
     }
 }

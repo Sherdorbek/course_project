@@ -1,10 +1,44 @@
 {{ form_start(form,{'attr': {'novalidate':'novalidate'}})}}
 
-    {{ form_row(form.category)}}
-    {{ form_row(form.name)}}
-    {{ form_row(form.description)}}
-    {{ form_row(form.type)}}
+<div class="row">
+    <div class="col">{{ form_row(form.category)}}</div>
+    <div class="col">{{ form_row(form.name)}}</div>
+</div>
 
-    {{ form_row(form.save,{'label':'Save'})}}
+{{ form_row(form.description)}}
+
+<div data-controller="options" data-options-index-value="{{ form.options.vars.value|length }}">
+
+    {{ form_row(form.type, {
+    'attr': {
+    'data-options-target': 'typeSelect',
+    'data-action': 'change->options#typeChanged'
+    }
+    }) }}
+
+    <div data-options-target="wrapper" style="{% if form.type.vars.value != 'one_of_many' %}display:none{% endif %}">
+
+        <label class="form-label">Options</label>
+
+        <div data-options-target="list" data-form-name="{{ form.options.vars.full_name }}">
+
+            {% for option in form.options %}
+            <div class="input-group mb-2">
+                {{ form_widget(option) }}
+                <button type="button" class="btn btn-outline-secondary" data-action="options#removeOption">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            {% endfor %}
+        {% do form.options.setRendered() %}
+        </div>
+
+        <button type="button" class="btn btn-outline-primary mt-1 mb-3" data-action="options#addOption">
+            <i class="bi bi-plus-lg"></i> Add Option
+        </button>
+    </div>
+</div>
+
+{{ form_row(form.save,{'label':'Save'})}}
 
 {{form_end(form)}}
