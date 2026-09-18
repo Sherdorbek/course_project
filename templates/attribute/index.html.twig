@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AttributeController!{% endblock %}
+
+{% block body %}
+<a href="{{ path('app_attribute_new') }}">New</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="id">Category</th>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for attr in attrs %}
+    <tr>
+      <th scope="row">{{attr.category.name}}</th>
+      <td> <a href="{{ path('app_attribute_edit',{id:attr.id}) }}">{{attr.name}}</a></td>
+      <td>{{attr.description|u.truncate(50, '...', false)}}</td>
+      <td>{{attr.type.value}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

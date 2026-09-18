@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^3.3",
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.7",
         "knpuniversity/oauth2-client-bundle": "^2.20",
@@ -47,6 +48,7 @@
         "twbs/bootstrap": "5.3.8",
         "twbs/bootstrap-icons": "^1.13",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/string-extra": "^3.24",
         "twig/twig": "^2.12|^3.0"
     },
     "config": {

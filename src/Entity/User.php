@@ -40,9 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-    #[ORM\Column]
-    private ?bool $isVerified = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
@@ -147,18 +144,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFacebookId(?string $facebookId): static
     {
         $this->facebookId = $facebookId;
-
-        return $this;
-    }
-
-    public function isVerified(): ?bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setIsVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
 
         return $this;
     }
