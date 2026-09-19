@@ -1,0 +1,16 @@
+{{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+<h5 class="card-title mb-3">Position Details</h5>
+{{ form_row(form.title) }}
+{{ form_row(form.description) }}
+{{ form_row(form.public) }}
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Select Attribute
+    </button>
+    <ul class="dropdown-menu">
+        
+    </ul>
+</div>
+{# <button><i class="fa-solid fa-plus"></i> Add Attribute</button> #}
+<button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

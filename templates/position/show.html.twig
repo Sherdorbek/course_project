@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Position{% endblock %}
+
+{% block body %}
+    <h1>Position</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ position.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ position.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ position.description }}</td>
+            </tr>
+            <tr>
+                <th>Public</th>
+                <td>{{ position.public ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>UpdatedAt</th>
+                <td>{{ position.updatedAt ? position.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_position_index') }}">back to list</a>
+
+    <a href="{{ path('app_position_edit', {'id': position.id}) }}">edit</a>
+
+    {{ include('position/_delete_form.html.twig') }}
+{% endblock %}

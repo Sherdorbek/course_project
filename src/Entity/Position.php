@@ -31,6 +31,9 @@ class Position
     #[ORM\OneToMany(targetEntity: PositionAttr::class, mappedBy: 'position', orphanRemoval: true)]
     private Collection $positionAttrs;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
         $this->positionAttrs = new ArrayCollection();
@@ -103,6 +106,18 @@ class Position
                 $positionAttr->setPosition(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
