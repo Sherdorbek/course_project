@@ -4,9 +4,14 @@ namespace App\Entity;
 
 use App\Enum\AttributeTypeEnum;
 use App\Repository\AttributeCvRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 
 #[ORM\Entity(repositoryClass: AttributeCvRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_NAME', fields: ['name'])]
@@ -32,9 +37,17 @@ class AttributeCv
     #[ORM\Column(enumType: AttributeTypeEnum::class)]
     private ?AttributeTypeEnum $type = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, nullable: true)]
-    private ?array $options = null;
+    /**
+     * @var Collection<int, OneOfMany>
+     */
+    #[ORM\OneToMany(targetEntity: OneOfMany::class, mappedBy: 'attribute', orphanRemoval: true, cascade: ['persist'])]
+    #[Assert\Valid]
+    private Collection $oneOfManies;
 
+    public function __construct()
+    {
+        $this->oneOfManies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,16 +102,42 @@ class AttributeCv
         return $this;
     }
 
-    public function getOptions(): ?array
+    /**
+     * @return Collection<int, OneOfMany>
+     */
+    public function getOneOfManies(): Collection
     {
-        return $this->options;
+        return $this->oneOfManies;
     }
 
-    public function setOptions(?array $options): static
+    public function addOneOfMany(OneOfMany $oneOfMany): static
     {
-        $this->options = $options;
+        if (!$this->oneOfManies->contains($oneOfMany)) {
+            $this->oneOfManies->add($oneOfMany);
+            $oneOfMany->setAttribute($this);
+        }
 
         return $this;
     }
 
+    public function removeOneOfMany(OneOfMany $oneOfMany): static
+    {
+        if ($this->oneOfManies->removeElement($oneOfMany)) {
+            if ($oneOfMany->getAttribute() === $this) {
+                $oneOfMany->setAttribute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context, $payload): void
+    {
+        if ($this->type === AttributeTypeEnum::OneOfMany && $this->oneOfManies->isEmpty()) {
+            $context->buildViolation('You must provide at least one option.')
+                ->atPath('oneOfManies')
+                ->addViolation();
+        }
+    }
 }

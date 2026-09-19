@@ -7,7 +7,7 @@
 
 {{ form_row(form.description)}}
 
-<div data-controller="options" data-options-index-value="{{ form.options.vars.value|length }}">
+<div data-controller="options" data-options-index-value="{{ form.oneOfManies|length }}">
 
     {{ form_row(form.type, {
     'attr': {
@@ -16,29 +16,39 @@
     }
     }) }}
 
-    <div data-options-target="wrapper" style="{% if form.type.vars.value != 'one_of_many' %}display:none{% endif %}">
+    <div data-options-target="wrapper" style="{% if form.type.vars.value != 'one of many' %}display:none{% endif %}">
 
         <label class="form-label">Options</label>
 
-        <div data-options-target="list" data-form-name="{{ form.options.vars.full_name }}">
-
-            {% for option in form.options %}
-            <div class="input-group mb-2">
-                {{ form_widget(option) }}
-                <button type="button" class="btn btn-outline-secondary" data-action="options#removeOption">
-                    <i class="bi bi-trash"></i>
-                </button>
-            </div>
-            {% endfor %}
-        {% do form.options.setRendered() %}
+        <div class="text-danger">
+            {{ form_errors(form.oneOfManies) }}
         </div>
 
-        <button type="button" class="btn btn-outline-primary mt-1 mb-3" data-action="options#addOption">
-            <i class="bi bi-plus-lg"></i> Add Option
+        <div data-options-target="list" data-form-name="{{ form.oneOfManies.vars.full_name }}">
+
+            {% for option in form.oneOfManies %}
+            <div class="mb-2">
+                <div class="input-group">
+                    {{ form_widget(option.value) }}
+                    <button type="button" class="btn btn-outline-secondary" data-action="options#removeOption">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                {{ form_errors(option.value) }}
+            </div>
+            {% endfor %}
+            {% do form.oneOfManies.setRendered() %}
+        </div>
+
+        <button type="button" class="btn btn-outline-primary my-2" data-action="options#addOption">
+            <i class="fa-solid fa-plus"></i> Add Option
         </button>
     </div>
 </div>
 
-{{ form_row(form.save,{'label':'Save'})}}
+<div class="mt-3 d-flex gap-2 justify-content-end">
+    <a href="{{ path('app_attributes') }}" class="btn btn-secondary">Cancel</a>
+    {{ form_widget(form.save) }}
+</div>
 
 {{form_end(form)}}

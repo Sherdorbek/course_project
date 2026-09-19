@@ -2,9 +2,9 @@
 
 namespace App\Enum;
 
-enum UserRoleEnum : String
+enum UserRoleEnum: string
 {
-    case Admin = 'admin';
-    case Candidate = 'candidate';
-    case Recruiter = 'recruiter';
+    case Admin = 'ROLE_ADMIN';
+    case Candidate = 'ROLE_CANDIDATE';
+    case Recruiter = 'ROLE_RECRUITER';
 }

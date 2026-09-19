@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Override;
 
 class AttributeCategoryCrudController extends AbstractCrudController
 {
@@ -19,11 +18,25 @@ class AttributeCategoryCrudController extends AbstractCrudController
         return AttributeCategory::class;
     }
 
-    #[Override]
+    #[\Override]
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->remove(Crud::PAGE_INDEX, Action::EDIT);
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
+            ->addBatchAction(Action::BATCH_DELETE)
+            ->update(
+                Crud::PAGE_INDEX,
+                Action::EDIT,
+                fn (Action $action) => $action->setCssClass('d-none')
+            );
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->showEntityActionsInlined(true)
+             ->setDefaultRowAction(Action::EDIT)
+             ->setPaginatorPageSize(15);
     }
 
     /*

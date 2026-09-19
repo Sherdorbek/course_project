@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum AttributeTypeEnum : String
+enum AttributeTypeEnum: string
 {
     case StringType = 'string';
     case TextType = 'text';
@@ -11,5 +11,19 @@ enum AttributeTypeEnum : String
     case DateType = 'date';
     case PeriodType = 'period';
     case BoolType = 'boolean';
-    case OneOfMany = 'one_of_many';
+    case OneOfMany = 'one of many';
+
+    public function getColor(): string
+    {
+        return match ($this) {
+            self::StringType => 'primary',
+            self::TextType => 'secondary',
+            self::ImageType => 'info',
+            self::NumericType => 'warning',
+            self::DateType => 'success',
+            self::PeriodType => 'dark',
+            self::BoolType => 'danger',
+            self::OneOfMany => 'secondary',
+        };
+    }
 }

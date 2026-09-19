@@ -31,4 +31,5 @@ return [
     '@popperjs/core' => ['version' => '2.11.8'],
     'bootstrap/dist/css/bootstrap.min.css' => ['version' => '5.3.8', 'type' => 'css'],
     'bootstrap/dist/js/bootstrap.bundle.min.js' => ['version' => '5.3.8'],
+    '@fortawesome/fontawesome-free/css/all.css' => ['version' => '7.3.1', 'type' => 'css'],
 ];

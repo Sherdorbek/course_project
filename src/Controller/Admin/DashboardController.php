@@ -3,11 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Controller\Admin\CRUD\AttributeCategoryCrudController;
-use App\Controller\Admin\CRUD\AttributeCvCrudController;
+use App\Controller\Admin\CRUD\UserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
-use App\Controller\Admin\CRUD\UserCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -43,6 +42,5 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkTo(UserCrudController::class, 'Users', 'fas fa-user');
         yield MenuItem::linkTo(AttributeCategoryCrudController::class, 'Categories', 'fas fa-book');
-        yield MenuItem::linkTo(AttributeCvCrudController::class, 'Attributes', 'fas fa-list');
     }
 }

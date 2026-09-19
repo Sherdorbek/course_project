@@ -10,7 +10,7 @@ class AttributeCategory extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $all = ['Certification','Domain Knowledge','Personal information','Soft skill'];
+        $all = ['Certification', 'Domain Knowledge', 'Personal information', 'Soft skill'];
         foreach ($all as $c) {
             $category = new EntityAttributeCategory();
             $category->setName($c);

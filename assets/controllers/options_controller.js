@@ -16,20 +16,22 @@ export default class extends Controller {
 
     addOption() {
         const row = document.createElement('div');
-        row.classList.add('input-group', 'mb-2');
+        row.classList.add('mb-2');
 
         const formName = this.listTarget.dataset.formName;
 
         row.innerHTML = `
-            <input type="text"
-                   class="form-control"
-                   name="${formName}[${this.indexValue}]"
-                   required />
-            <button type="button"
-                    class="btn btn-outline-secondary"
-                    data-action="options#removeOption">
-                <i class="bi bi-trash"></i>
-            </button>
+            <div class="input-group">
+                <input type="text"
+                       class="form-control"
+                       name="${formName}[${this.indexValue}][value]"
+                       required />
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-action="options#removeOption">
+                    <i class="fa-solid fa-trash"></i>  
+                </button>
+            </div>
         `;
 
         this.listTarget.appendChild(row);
@@ -37,11 +39,11 @@ export default class extends Controller {
     }
 
     removeOption(event) {
-        event.currentTarget.closest('.input-group').remove();
+        event.currentTarget.closest('.mb-2').remove();
     }
 
     _toggle() {
-        const isOneOfMany = this.typeSelectTarget.value === 'one_of_many';
+        const isOneOfMany = this.typeSelectTarget.value === 'one of many';
         this.wrapperTarget.style.display = isOneOfMany ? '' : 'none';
 
         if (!isOneOfMany) {
