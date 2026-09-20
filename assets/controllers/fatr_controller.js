@@ -16,7 +16,7 @@ export default class extends Controller {
     };
 
     connect() {
-
+        this.renderAddedAttributes();
     }
 
     async search() {

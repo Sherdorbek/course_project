@@ -3,40 +3,5 @@
 {{ form_row(form.title) }}
 {{ form_row(form.description) }}
 {{ form_row(form.public) }}
-<div data-controller="fatr" data-fatr-url-value="{{ path('api_search_attribute') }}">
-    <div class="input-group mb-4">
-        <input
-            data-fatr-target="name"
-            type="text"
-            class="form-control"
-            placeholder="Recipient’s username"
-            aria-label="Recipient’s username with two button addons"
-        >
-               
-        <button
-            data-action="click->fatr#search"
-            class="btn btn-outline-secondary"
-            type="button"
-        >
-            <i class="fa-solid fa-magnifying-glass"></i>
-        </button>
-    </div>
-
-    <div
-        data-fatr-target="output"
-        class="overflow-y-auto border rounded p-2"
-        style="max-height: 400px;"
-    >
-    </div>
-
-    <div class="border rounded p-3 my-3">
-        <h5>Attributes</h5>
-        <div data-fatr-target="list">
-            <span class="text-secondary">No attributes yet</span>                
-        </div>
-    </div>
-    {% do form.attributes.setRendered() %}
-</div>
-{# <button><i class="fa-solid fa-plus"></i> Add Attribute</button> #}
 <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

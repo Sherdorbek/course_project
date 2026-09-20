@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\AttributeCv;
 use App\Entity\Position;
 use App\Entity\PositionAttr;
 use App\Form\PositionType;
 use App\Repository\PositionRepository;
-use DateTime;
+use App\Service\PositionAttributeSynchronizer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,22 +31,9 @@ final class PositionController extends AbstractController
         $form = $this->createForm(PositionType::class, $position);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
 
-            $attrIds = $form->get('attributes')->getData();
-            $attrs = $entityManager->getRepository(AttributeCv::class)->findBy(['id' => $attrIds]);
-            $entityManager->persist($position);
-
-            foreach ($attrs as $attr) {
-                $positionAttr = new PositionAttr();
-
-                $positionAttr->setPosition($position);
-                $positionAttr->setAttribute($attr);
-
-                $entityManager->persist($positionAttr);
-            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
@@ -76,19 +62,8 @@ final class PositionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
 
-            $attrIds = $form->get('attributes')->getData();
-            $attrs = $entityManager->getRepository(AttributeCv::class)->findBy(['id' => $attrIds]);
-            $entityManager->persist($position);
-
-            foreach ($attrs as $attr) {
-                $positionAttr = new PositionAttr();
-
-                $positionAttr->setPosition($position);
-                $positionAttr->setAttribute($attr);
-
-                $entityManager->persist($positionAttr);
-            }
             $entityManager->flush();
+
             return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -112,8 +87,21 @@ final class PositionController extends AbstractController
     #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]
     public function deleteAll(Request $request, EntityManagerInterface $entityManager): Response
     {
-
-
         return $this->redirectToRoute('app_position_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    //
+    // ATTRIBUTE ROUTS
+    //
+
+    #[Route('/{id}/edit/attributes', name: 'app_position_attributes', methods: ['GET'])]
+    public function editAttribute(Request $request, Position $position): Response
+    {
+
+
+        return $this->render('position/attribute/index.html.twig', [
+            'position' => $position,
+            'attributes' => $position->getPositionAttrs()
+        ]);
     }
 }

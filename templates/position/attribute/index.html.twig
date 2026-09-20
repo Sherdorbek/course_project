@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Positions{% endblock %}
+
+{% block body %}
+
+  {% for message in app.flashes('notice') %}
+    <div class="flash-notice">
+      {{ message }}
+    </div>
+  {% endfor %}
+  <div class="container d-flex flex-column justify-content-start align-items-center min-vh-100">
+    {% include "position/_tabs.html.twig" with {tab2: 'active'} %}
+
+    <div class="container my-4">
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Positions Attributes</h5>
+        <div class="d-flex gap-2">
+          <a href="{{ path('app_position_new') }}" class="btn btn-primary d-inline-flex align-items-center gap-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add</span>
+          </a>
+          <button
+            type="submit"
+            form="delete-form"
+            class="btn btn-outline-danger d-inline-flex align-items-center gap-2"
+            id="btn-delete"
+          >
+            <i class="fa-solid fa-trash"></i>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+
+      <form method="post" action="{{ path('app_position_delete_all') }}" id="delete-form">
+        <div class="table-responsive border rounded">
+          {% include "position/attribute/_table.html.twig" %}
+        </div>
+      </form>
+
+    </div>
+  </div>
+  <script>
+    document.getElementById("selectAll")?.addEventListener("change", function () {
+      document
+        .querySelectorAll(".row-checkbox")
+        .forEach((cb) => (cb.checked = this.checked));
+    });
+  </script>
+{% endblock %}

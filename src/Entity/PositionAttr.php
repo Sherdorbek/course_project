@@ -21,6 +21,9 @@ class PositionAttr
     #[ORM\JoinColumn(nullable: false)]
     private ?AttributeCv $attribute = null;
 
+    #[ORM\Column]
+    private ?int $rowOrder = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +49,18 @@ class PositionAttr
     public function setAttribute(?AttributeCv $attribute): static
     {
         $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    public function getRowOrder(): ?int
+    {
+        return $this->rowOrder;
+    }
+
+    public function setRowOrder(int $rowOrder): static
+    {
+        $this->rowOrder = $rowOrder;
 
         return $this;
     }

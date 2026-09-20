@@ -1,0 +1,13 @@
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link {{tab1 ?? ''}}" aria-current="page" href="{{ path('app_position_edit', {id: position.id}) }}">Details</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{tab2 ?? ''}}" href="{{ path('app_position_attributes', {id: position.id}) }}">Attributes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{tab3 ?? ''}}" href="#">Projects</a>
+    </li>
+</ul>
+
