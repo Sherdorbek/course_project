@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\AttributeCv;
 use App\Entity\Position;
+use App\Entity\PositionAttr;
 use App\Form\PositionType;
 use App\Repository\PositionRepository;
 use DateTime;
@@ -30,9 +32,22 @@ final class PositionController extends AbstractController
         $form = $this->createForm(PositionType::class, $position);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
+
+            $attrIds = $form->get('attributes')->getData();
+            $attrs = $entityManager->getRepository(AttributeCv::class)->findBy(['id' => $attrIds]);
             $entityManager->persist($position);
+
+            foreach ($attrs as $attr) {
+                $positionAttr = new PositionAttr();
+
+                $positionAttr->setPosition($position);
+                $positionAttr->setAttribute($attr);
+
+                $entityManager->persist($positionAttr);
+            }
             $entityManager->flush();
 
             return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
@@ -59,8 +74,21 @@ final class PositionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
 
+            $attrIds = $form->get('attributes')->getData();
+            $attrs = $entityManager->getRepository(AttributeCv::class)->findBy(['id' => $attrIds]);
+            $entityManager->persist($position);
+
+            foreach ($attrs as $attr) {
+                $positionAttr = new PositionAttr();
+
+                $positionAttr->setPosition($position);
+                $positionAttr->setAttribute($attr);
+
+                $entityManager->persist($positionAttr);
+            }
+            $entityManager->flush();
             return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -73,7 +101,7 @@ final class PositionController extends AbstractController
     #[Route('/{id}', name: 'app_position_delete', methods: ['POST'])]
     public function delete(Request $request, Position $position, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$position->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $position->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($position);
             $entityManager->flush();
         }
@@ -81,10 +109,10 @@ final class PositionController extends AbstractController
         return $this->redirectToRoute('app_position_index', [], Response::HTTP_SEE_OTHER);
     }
 
-     #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]
-    public function deleteAll(Request $request,EntityManagerInterface $entityManager): Response
+    #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]
+    public function deleteAll(Request $request, EntityManagerInterface $entityManager): Response
     {
-    
+
 
         return $this->redirectToRoute('app_position_index', [], Response::HTTP_SEE_OTHER);
     }
