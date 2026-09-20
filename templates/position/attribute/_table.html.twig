@@ -16,9 +16,7 @@
                     <input class="form-check-input row-checkbox" type="checkbox" name="selectedPositions[]" value="{{ position.id }}">
                 </td>
                 <td>
-                    <a href="{{ path('app_position_edit', {id: position.id}) }}" class="text-decoration-none fw-semibold">
-                        {{ attribute.attribute.name }}
-                    </a>
+                    {{ attribute.attribute.name }}
                 </td>
                 <td>{{ attribute.attribute.description|u.truncate(50, '...', false) }}</td>
                 <td>{{ attribute.attribute.type.value }}</td>            

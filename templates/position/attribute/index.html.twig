@@ -11,7 +11,20 @@
   {% endfor %}
   <div class="container d-flex flex-column justify-content-start align-items-center min-vh-100">
     {% include "position/_tabs.html.twig" with {tab2: 'active'} %}
-
+    <div data-controller="satr"  data-content-loader-url-value="{{path('api_search_attribute')}}"  class="my-2" style="width:90%">
+      
+      <div class="input-group my-2 mx-auto" style="max-width:400px">
+        <input type="text" class="form-control" placeholder="Search">
+        <button data-action="click->satr#search" class="btn btn-outline-primary" type="button">Search</button>
+      </div>
+    
+      <div data-satr-target="selected" class="border rounded p-4 ">
+        No attribute selected yet
+      </div>
+      <div data-satr-target="results" class="border rounded p-2">
+      </div>
+    </div>
+    
     <div class="container my-4">
 
       <div class="d-flex justify-content-between align-items-center mb-3">
