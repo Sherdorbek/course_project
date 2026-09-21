@@ -1,0 +1,34 @@
+<twig:Turbo:Frame id="search-result">
+    <div class="table-responsive border rounded my-3">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" style="width: 40px;">
+                        <input class="form-check-input" type="checkbox" id="selectAll">
+                    </th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if searchAttributes is defined %}                
+                    {% for searchAttribute in searchAttributes %}
+                        <tr>
+                            <td>
+                                <input class="form-check-input row-checkbox" type="checkbox" name="selectedAtributes[]" value="{{ searchAttribute.id }}">
+                            </td>
+                            <td>{{ searchAttribute.name }}</td>
+                            <td>{{ searchAttribute.category.name }}</td>
+                            <td>{{ searchAttribute.type.name }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No attributes found.</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</twig:Turbo:Frame>

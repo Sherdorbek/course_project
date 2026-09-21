@@ -25,18 +25,18 @@ class Position
     #[ORM\Column]
     private ?bool $public = null;
 
-    /**
-     * @var Collection<int, PositionAttr>
-     */
-    #[ORM\OneToMany(targetEntity: PositionAttr::class, mappedBy: 'position', orphanRemoval: true)]
-    private Collection $positionAttrs;
-
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /**
+     * @var Collection<int, AttributeCv>
+     */
+    #[ORM\ManyToMany(targetEntity: AttributeCv::class)]
+    private Collection $attributes;
+
     public function __construct()
     {
-        $this->positionAttrs = new ArrayCollection();
+        $this->attributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,36 +80,6 @@ class Position
         return $this;
     }
 
-    /**
-     * @return Collection<int, PositionAttr>
-     */
-    public function getPositionAttrs(): Collection
-    {
-        return $this->positionAttrs;
-    }
-
-    public function addPositionAttr(PositionAttr $positionAttr): static
-    {
-        if (!$this->positionAttrs->contains($positionAttr)) {
-            $this->positionAttrs->add($positionAttr);
-            $positionAttr->setPosition($this);
-        }
-
-        return $this;
-    }
-
-    public function removePositionAttr(PositionAttr $positionAttr): static
-    {
-        if ($this->positionAttrs->removeElement($positionAttr)) {
-            // set the owning side to null (unless already changed)
-            if ($positionAttr->getPosition() === $this) {
-                $positionAttr->setPosition(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -118,6 +88,30 @@ class Position
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AttributeCv>
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    public function addAttribute(AttributeCv $attribute): static
+    {
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes->add($attribute);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(AttributeCv $attribute): static
+    {
+        $this->attributes->removeElement($attribute);
 
         return $this;
     }

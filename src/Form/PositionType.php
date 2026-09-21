@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\AttributeCv;
 use App\Entity\Position;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,7 +24,11 @@ class PositionType extends AbstractType
             ])
             ->add('description')
             ->add('public')
-            
+            ->add('attributes', EntityType::class, [
+                'class' => AttributeCv::class,
+                'multiple' => true,
+                'choice_label' => 'name',
+            ])
         ;
     }
 

@@ -114,7 +114,6 @@ class AttributeCv
     {
         if (!$this->oneOfManies->contains($oneOfMany)) {
             $this->oneOfManies->add($oneOfMany);
-            $oneOfMany->setAttribute($this);
         }
 
         return $this;
@@ -122,17 +121,13 @@ class AttributeCv
 
     public function removeOneOfMany(OneOfMany $oneOfMany): static
     {
-        if ($this->oneOfManies->removeElement($oneOfMany)) {
-            if ($oneOfMany->getAttribute() === $this) {
-                $oneOfMany->setAttribute(null);
-            }
-        }
+        $this->oneOfManies->removeElement($oneOfMany);
 
         return $this;
     }
 
     #[Assert\Callback]
-    public function validate(ExecutionContextInterface $context, $payload): void
+    public function validate(ExecutionContextInterface $context): void
     {
         if ($this->type === AttributeTypeEnum::OneOfMany && $this->oneOfManies->isEmpty()) {
             $context->buildViolation('You must provide at least one option.')
@@ -140,4 +135,5 @@ class AttributeCv
                 ->addViolation();
         }
     }
+
 }

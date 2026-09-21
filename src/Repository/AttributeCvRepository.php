@@ -40,4 +40,13 @@ class AttributeCvRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function searchByPrefix(string $prefix): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.name LIKE :prefix')
+            ->setParameter('prefix', $prefix . '%')
+            ->orderBy('a.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

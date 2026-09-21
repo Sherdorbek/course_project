@@ -94,14 +94,4 @@ final class PositionController extends AbstractController
     // ATTRIBUTE ROUTS
     //
 
-    #[Route('/{id}/edit/attributes', name: 'app_position_attributes', methods: ['GET'])]
-    public function editAttribute(Request $request, Position $position): Response
-    {
-
-
-        return $this->render('position/attribute/index.html.twig', [
-            'position' => $position,
-            'attributes' => $position->getPositionAttrs()
-        ]);
-    }
 }
