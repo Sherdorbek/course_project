@@ -1,7 +1,7 @@
 {{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
 
 <div class="card border shadow rounded py-3 px-4">
-<h5 class="card-title mb-3">Position Details</h5>
+    <h5 class="card-title mb-3">Position Details</h5>
     {{ form_row(form.title) }}
     {{ form_row(form.description) }}
     {{ form_row(form.public) }}
@@ -9,10 +9,14 @@
 
 {% include 'position/_search.html.twig' %}
 
-{% for attribute in position.attributes %}
-    <input type="text" name="position[attributes][]" value="{{ attribute.id }}"/>
-{% endfor %}
-{% do form.attributes.setRendered() %}
+<div class="card border shadow rounded py-3 px-4" id="selectedParent">
+    <h5 class="card-title mb-3">3. Selected Attributes</h5>
+    {% for attribute in position.attributes %}
+        <input type="text" class="form-control" name="position[attributes][]" value="{{ attribute.id }}"/>
+    {% endfor %}
+    {% do form.attributes.setRendered() %}
+</div>
+
 
 
 <button class="btn btn-primary">{{ button_label|default('Save') }}</button>

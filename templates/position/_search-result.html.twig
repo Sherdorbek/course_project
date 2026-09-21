@@ -1,10 +1,10 @@
 <twig:Turbo:Frame id="search-result">
-    <div class="table-responsive border rounded my-3">
+    <div class="table-responsive border rounded my-3" data-controller="checkbox">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
                     <th scope="col" style="width: 40px;">
-                        <input class="form-check-input" type="checkbox" id="selectAll">
+                        <input class="form-check-input" type="checkbox"  data-action="change->checkbox#toggle change->search-attribute#toggleAdd" >
                     </th>
                     <th scope="col">Name</th>
                     <th scope="col">Category</th>
@@ -16,7 +16,15 @@
                     {% for searchAttribute in searchAttributes %}
                         <tr>
                             <td>
-                                <input class="form-check-input row-checkbox" type="checkbox" name="selectedAtributes[]" value="{{ searchAttribute.id }}">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="selectedAtributes[]"
+                                    value="{{ searchAttribute.id }}"
+                                    data-checkbox-target="checkbox"
+                                    data-search-attribute-target="checkbox"
+                                    data-action="change->search-attribute#toggleAdd"
+                                >
                             </td>
                             <td>{{ searchAttribute.name }}</td>
                             <td>{{ searchAttribute.category.name }}</td>

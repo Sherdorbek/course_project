@@ -1,15 +1,21 @@
 <div
+    class="card border shadow rounded py-3 px-4 my-4"
     data-controller="search-attribute"
     data-search-attribute-url-value="{{ path('app_position_search_attribute') }}"
-    class="card border shadow rounded py-3 px-4 my-4"
 >
     <h5 class="card-title mb-3">2.Search attributes</h5>
-    <div class="d-flex w-100 gap-2">
+    <div
+        class="d-flex w-100 gap-2"
+    >
         <div class="col">
             <input data-action="input->search-attribute#search" class="form-control" type="text" name="q" placeholder="Search attribute"/>
         </div>
-        <div class="col-auto">
-            <button class="btn btn-primary" type="button">Add</button>
+        <div class="col-auto d-none" data-search-attribute-target="add">
+            <button
+                class="btn btn-primary"
+                type="button"
+                data-action="click->search-attribute#addAttribute"
+            >Add</button>
         </div>
     </div>
 
