@@ -43,7 +43,7 @@ export default class extends Controller {
     }
 
     _toggle() {
-        const isOneOfMany = this.typeSelectTarget.value === 'one of many';
+        const isOneOfMany = this.typeSelectTarget.value === 'one_of_many';
         this.wrapperTarget.style.display = isOneOfMany ? '' : 'none';
 
         if (!isOneOfMany) {

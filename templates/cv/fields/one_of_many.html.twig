@@ -1,4 +1,9 @@
 <div class="mb-3">
-  <label for="text" class="form-label">{{label}}</label>
-  <textarea class="form-control" id="text" rows="3"></textarea>
+  <label for="text" class="form-label">{{ attribute.name }}</label>
+  <select class="form-select">
+    <option value="-1" selected>Select</option>
+    {% for option in attribute.oneOfManies %}
+       <option value="{{option.id}}">{{option.value}}</option>
+    {% endfor %}
+  </select>
 </div>

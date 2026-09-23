@@ -39,5 +39,16 @@ class OneOfMany
 
         return $this;
     }
+      public function getAttribute(): ?AttributeCv
+    {
+        return $this->attribute;
+    }
+
+    public function setAttribute(?AttributeCv $attribute): static
+    {
+        $this->attribute = $attribute;
+
+        return $this;
+    }
 
 }

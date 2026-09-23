@@ -114,6 +114,7 @@ class AttributeCv
     {
         if (!$this->oneOfManies->contains($oneOfMany)) {
             $this->oneOfManies->add($oneOfMany);
+            $oneOfMany->setAttribute($this);
         }
 
         return $this;

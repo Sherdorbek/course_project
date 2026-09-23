@@ -31,7 +31,9 @@ final class AttributeController extends AbstractController
         
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('notice', 'New attribute has been added');
+            foreach ($attr->getOneOfManies() as $option){
+                $option->setAttribute($attr);
+            }
             $manager->persist($attr);
             $manager->flush();
 
