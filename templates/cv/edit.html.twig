@@ -3,11 +3,14 @@
 {% block title %}Edit Cv{% endblock %}
 
 {% block body %}
-    <h1>Edit Cv</h1>
+    <div class="container mt-2">
+        <h1>Edit Cv</h1>
 
-    {{ include('cv/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('cv/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_cv_index') }}">back to list</a>
+        <a href="{{ path('app_cv_index') }}">back to list</a>
 
-    {{ include('cv/_delete_form.html.twig') }}
+        {{ include('cv/_delete_form.html.twig') }}
+
+    </div>
 {% endblock %}

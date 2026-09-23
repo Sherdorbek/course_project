@@ -1,4 +1,35 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+<form method="post" action="{{ path('app_cv_new', {id: cv.position.id}) }}">
+
+    <div class="card shadow my-2 p-4">
+        <h5 class="card-title">Personal details</h5>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="name" class="form-label">First name</label>
+                <input type="text" class="form-control" id="name">
+            </div>
+            <div class="mb-3">
+                <label for="secondname" class="form-label">Second name</label>
+                <input type="text" class="form-control" id="secondname">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email">
+            </div>
+        </div>      
+    </div>
+
+    <div class="card shadow my-2 p-4">
+        <h5 class="card-title">Attributes</h5>
+        <div class="card-body">
+            {% for category in categories %}
+                <h5 class="card-title">{{ category.name }}</h5>
+                {% for attribute in attributes %}
+                    {% if category.name == attribute.category.name %}
+                                {% include "cv/fields/" ~ attribute.type.value ~ ".html.twig" with {label:attribute.name} %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>      
+    </div>
+
+</form>

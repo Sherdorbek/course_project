@@ -15,7 +15,6 @@ class CvType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('likes')
             ->add('position', EntityType::class, [
                 'class' => Position::class,
                 'choice_label' => 'id',

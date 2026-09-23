@@ -3,33 +3,40 @@
 {% block title %}Cv index{% endblock %}
 
 {% block body %}
-    <h1>Cv index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Likes</th>
-                <th>actions</th>
-            </tr>
+  <div class="container my-3">
+    <h3>CVs list</h3>
+    <div class="table-responsive border rounded">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th scope="col" style="width: 40px;">
+              <input class="form-check-input" type="checkbox" id="selectAll">
+            </th>
+            <th scope="col">id</th>
+            <th scope="col">Likes</th>
+          </tr>
         </thead>
         <tbody>
-        {% for cv in cvs %}
+          {% for cv in cvs %}
             <tr>
-                <td>{{ cv.id }}</td>
-                <td>{{ cv.likes }}</td>
-                <td>
-                    <a href="{{ path('app_cv_show', {'id': cv.id}) }}">show</a>
-                    <a href="{{ path('app_cv_edit', {'id': cv.id}) }}">edit</a>
-                </td>
+              <td>
+                <input class="form-check-input row-checkbox" type="checkbox" name="selectedPositions[]" value="{{ cv.id }}">
+              </td>
+              <td>
+                <a href="{{ path('app_position_show', {id: cv.id}) }}" class="text-decoration-none fw-semibold">
+                  {{ cv.id }}
+                </a>
+              </td>
+              <td>{{ cv.likes }}</td>            
             </tr>
-        {% else %}
+          {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+              <td colspan="5" class="text-center py-4 text-muted">No CVs found.</td>
             </tr>
-        {% endfor %}
+          {% endfor %}
         </tbody>
-    </table>
-
-    <a href="{{ path('app_cv_new') }}">Create new</a>
+      </table>
+    </div>
+   
+  </div>
 {% endblock %}

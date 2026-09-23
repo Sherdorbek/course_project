@@ -11,7 +11,7 @@ enum AttributeTypeEnum: string
     case DateType = 'date';
     case PeriodType = 'period';
     case BoolType = 'boolean';
-    case OneOfMany = 'one of many';
+    case OneOfMany = 'one_of_many';
 
     public function getColor(): string
     {

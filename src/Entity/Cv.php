@@ -15,12 +15,6 @@ class Cv
     #[ORM\Column]
     private ?int $id = null;
 
-    /**
-     * @var Collection<int, Position>
-     */
-    #[ORM\ManyToMany(targetEntity: Position::class, inversedBy: 'cvs')]
-    private Collection $position;
-
     #[ORM\ManyToOne(inversedBy: 'cvs')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -28,38 +22,27 @@ class Cv
     #[ORM\Column]
     private ?int $likes = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cvs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Position $position = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $firstName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $secondName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
     public function __construct()
     {
-        $this->position = new ArrayCollection();
+        
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Position>
-     */
-    public function getPosition(): Collection
-    {
-        return $this->position;
-    }
-
-    public function addPosition(Position $position): static
-    {
-        if (!$this->position->contains($position)) {
-            $this->position->add($position);
-        }
-
-        return $this;
-    }
-
-    public function removePosition(Position $position): static
-    {
-        $this->position->removeElement($position);
-
-        return $this;
     }
 
     public function getUser(): ?User
@@ -82,6 +65,54 @@ class Cv
     public function setLikes(int $likes): static
     {
         $this->likes = $likes;
+
+        return $this;
+    }
+
+    public function getPosition(): ?Position
+    {
+        return $this->position;
+    }
+
+    public function setPosition(?Position $position): static
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getSecondName(): ?string
+    {
+        return $this->secondName;
+    }
+
+    public function setSecondName(string $secondName): static
+    {
+        $this->secondName = $secondName;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
 
         return $this;
     }

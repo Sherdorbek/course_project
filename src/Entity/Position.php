@@ -34,15 +34,15 @@ class Position
     /**
      * @var Collection<int, Cv>
      */
-    #[ORM\ManyToMany(targetEntity: Cv::class, mappedBy: 'position')]
+    #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'position')]
     private Collection $cvs;
-
    
    
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
         $this->cvs = new ArrayCollection();
+       
     }
 
     public function getId(): ?int
@@ -122,7 +122,7 @@ class Position
     {
         if (!$this->cvs->contains($cv)) {
             $this->cvs->add($cv);
-            $cv->addPosition($this);
+            $cv->setPosition($this);
         }
 
         return $this;
@@ -131,11 +131,16 @@ class Position
     public function removeCv(Cv $cv): static
     {
         if ($this->cvs->removeElement($cv)) {
-            $cv->removePosition($this);
+            // set the owning side to null (unless already changed)
+            if ($cv->getPosition() === $this) {
+                $cv->setPosition(null);
+            }
         }
 
         return $this;
     }
+
+
 
    
 }

@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\AttributeCategory;
 use App\Entity\Cv;
+use App\Entity\Position;
+use App\Enum\AttributeTypeEnum;
 use App\Form\CvType;
 use App\Repository\CvRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,14 +25,13 @@ final class CvController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_cv_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/{id<\d+>}/new', name: 'app_cv_new', methods: ['GET', 'POST'])]
+    public function new(Position $position, Request $request, EntityManagerInterface $entityManager): Response
     {
         $cv = new Cv();
-        $form = $this->createForm(CvType::class, $cv);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $cv->setPosition($position);
+        if ($request->getMethod() === "POST") {
+            $cv->setLikes(0);
             $entityManager->persist($cv);
             $entityManager->flush();
 
@@ -38,7 +40,8 @@ final class CvController extends AbstractController
 
         return $this->render('cv/new.html.twig', [
             'cv' => $cv,
-            'form' => $form,
+            'attributes' => $position->getAttributes(),
+            'categories' => $entityManager->getRepository(AttributeCategory::class)->findAll(),
         ]);
     }
 
