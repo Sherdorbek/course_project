@@ -2,8 +2,8 @@
   <label for="text" class="form-label">{{ attribute.name }}</label>
   <div class="input-group mb-3">
     <span class="input-group-text">From</span>
-    <input type="date" class="form-control">
+    <input type="date" class="form-control" name="attribute[period][{{attribute.id}}][]">
     <span class="input-group-text">To</span>
-    <input type="date" class="form-control">
+    <input type="date" class="form-control" name="attribute[period][{{attribute.id}}][]">
   </div>
 </div>

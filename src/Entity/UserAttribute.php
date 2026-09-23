@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\CvAttributeRepository;
-use BcMath\Number;
+use App\Repository\UserAttributeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CvAttributeRepository::class)]
-class CvAttribute
+#[ORM\Entity(repositoryClass: UserAttributeRepository::class)]
+class UserAttribute
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,6 +17,10 @@ class CvAttribute
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?AttributeCv $attribute = null;
+
+    #[ORM\ManyToOne(inversedBy: 'userAttributes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $valString = null;
@@ -34,18 +37,14 @@ class CvAttribute
     #[ORM\Column(nullable: true)]
     private ?bool $valBool = null;
 
-    #[ORM\Column(length: 255,nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $valDropdown = null;
 
     #[ORM\Column(length: 510, nullable: true)]
     private ?string $valImage = null;
 
-    #[ORM\Column(type: Types::DECIMAL,precision: 10, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $valNumber = null;
-
-    #[ORM\ManyToOne(inversedBy: 'attributes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Cv $cv = null;
 
     public function getId(): ?int
     {
@@ -60,6 +59,18 @@ class CvAttribute
     public function setAttribute(?AttributeCv $attribute): static
     {
         $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
@@ -129,7 +140,7 @@ class CvAttribute
         return $this->valDropdown;
     }
 
-    public function setValDropdown(string $valDropdown): static
+    public function setValDropdown(?string $valDropdown): static
     {
         $this->valDropdown = $valDropdown;
 
@@ -156,18 +167,6 @@ class CvAttribute
     public function setValNumber(?string $valNumber): static
     {
         $this->valNumber = $valNumber;
-
-        return $this;
-    }
-
-    public function getCv(): ?Cv
-    {
-        return $this->cv;
-    }
-
-    public function setCv(?Cv $cv): static
-    {
-        $this->cv = $cv;
 
         return $this;
     }

@@ -4,12 +4,14 @@
 
 {% block body %}
 
-    <div class="container mt-2">
-        <h1>Create new Cv</h1>
+    <div class="container mt-2" style="max-width:700px">
+            <h3 class="text-center">New Cv</h3>
+        <div class="d-flex justify-content-between mt-3 align-items-center">
+            <a class="btn btn-outline-secondary" href="{{ path('app_position_show',{id:cv.position.id}) }}">back to Position</a>
+        </div>
 
         {{ include('cv/_form.html.twig') }}
 
-        <a href="{{ path('app_cv_index') }}">back to list</a>
     </div>
     
 {% endblock %}

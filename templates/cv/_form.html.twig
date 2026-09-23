@@ -1,35 +1,19 @@
 <form method="post" action="{{ path('app_cv_new', {id: cv.position.id}) }}">
-
-    <div class="card shadow my-2 p-4">
-        <h5 class="card-title">Personal details</h5>
-        <div class="card-body">
-            <div class="mb-3">
-                <label for="name" class="form-label">First name</label>
-                <input type="text" class="form-control" id="name">
-            </div>
-            <div class="mb-3">
-                <label for="secondname" class="form-label">Second name</label>
-                <input type="text" class="form-control" id="secondname">
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="text" class="form-control" id="email">
-            </div>
-        </div>      
-    </div>
-
-    <div class="card shadow my-2 p-4">
-        <h5 class="card-title">Attributes</h5>
-        <div class="card-body">
-            {% for category in categories %}
-                <h5 class="card-title">{{ category.name }}</h5>
-                {% for attribute in attributes %}
+   
+    {% for category in categories %}
+        <div class="card shadow my-2 p-4">
+            <h5 class="card-title">{{ category.name }}</h5>
+            <div class="card-body">
+                {% for attribute in cv.position.attributes %}
                     {% if category.name == attribute.category.name %}
-                                {% include "cv/fields/" ~ attribute.type.value ~ ".html.twig" %}
+                        {% include "cv/fields/" ~ attribute.type.value ~ ".html.twig" %}
                     {% endif %}
                 {% endfor %}
-            {% endfor %}
-        </div>      
+            </div>
+        </div>
+    {% endfor %}
+            
+    <div class="d-flex my-3">
+        <input type="submit" value="Save" class="ms-auto btn btn-primary px-4">
     </div>
-
 </form>

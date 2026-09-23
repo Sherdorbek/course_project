@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\UserRoleEnum;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -24,11 +25,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
+    #[ORM\Column(type: 'string', enumType: UserRoleEnum::class)]
+    private UserRoleEnum $role;
 
     /**
      * @var string The hashed password
@@ -57,9 +55,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $cvs;
 
+    /**
+     * @var Collection<int, UserAttribute>
+     */
+    #[ORM\OneToMany(targetEntity: UserAttribute::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userAttributes;
+
     public function __construct()
     {
         $this->cvs = new ArrayCollection();
+        $this->userAttributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,21 +97,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
+    public function getRole(): UserRoleEnum
+    {
+
+        return $this->role;
+    }
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return [$this->role->value];
     }
 
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
+    public function setRole(UserRoleEnum $role): static
     {
-        $this->roles = $roles;
+        $this->role = $role;
 
         return $this;
     }
@@ -132,7 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -221,6 +224,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($cv->getUser() === $this) {
                 $cv->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserAttribute>
+     */
+    public function getUserAttributes(): Collection
+    {
+        return $this->userAttributes;
+    }
+
+    public function addUserAttribute(UserAttribute $userAttribute): static
+    {
+        if (!$this->userAttributes->contains($userAttribute)) {
+            $this->userAttributes->add($userAttribute);
+            $userAttribute->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserAttribute(UserAttribute $userAttribute): static
+    {
+        if ($this->userAttributes->removeElement($userAttribute)) {
+            // set the owning side to null (unless already changed)
+            if ($userAttribute->getUser() === $this) {
+                $userAttribute->setUser(null);
             }
         }
 

@@ -35,9 +35,15 @@ class Cv
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    /**
+     * @var Collection<int, CvAttribute>
+     */
+    #[ORM\OneToMany(targetEntity: CvAttribute::class, mappedBy: 'cv', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $attributes;
+
     public function __construct()
     {
-        
+        $this->attributes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -113,6 +119,36 @@ class Cv
     public function setEmail(string $email): static
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CvAttribute>
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    public function addAttribute(CvAttribute $attribute): static
+    {
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes->add($attribute);
+            $attribute->setCv($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(CvAttribute $attribute): static
+    {
+        if ($this->attributes->removeElement($attribute)) {
+            // set the owning side to null (unless already changed)
+            if ($attribute->getCv() === $this) {
+                $attribute->setCv(null);
+            }
+        }
 
         return $this;
     }
