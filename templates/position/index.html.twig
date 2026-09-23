@@ -38,7 +38,6 @@
             </th>
             <th scope="col">Title</th>
             <th scope="col">Description</th>
-            <th scope="col">Public</th>
             <th scope="col">Last updated</th>
           </tr>
         </thead>
@@ -49,12 +48,11 @@
               <input class="form-check-input row-checkbox" type="checkbox" name="selectedPositions[]" value="{{ position.id }}">
             </td>
             <td>
-              <a href="{{ path('app_position_edit', {id: position.id}) }}" class="text-decoration-none fw-semibold">
+              <a href="{{ path('app_position_show', {id: position.id}) }}" class="text-decoration-none fw-semibold">
                 {{ position.title }}
               </a>
             </td>
             <td>{{ position.description|u.truncate(50, '...', false) }}</td>
-            <td>{{ position.public ? "Yes" : "No" }}</td>            
             <td>{{ position.updatedAt|format_datetime('short') }}</td>            
           </tr>
           {% else %}

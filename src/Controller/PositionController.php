@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Position;
 use App\Entity\PositionAttr;
 use App\Form\PositionType;
+use App\Repository\AttributeCvRepository;
 use App\Repository\PositionRepository;
 use App\Service\PositionAttributeSynchronizer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,11 +33,13 @@ final class PositionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
+            $entityManager->persist($position);
 
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_position_show', ['id' => $position->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('position/new.html.twig', [
@@ -45,12 +48,30 @@ final class PositionController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/{id}', name: 'app_position_show', methods: ['GET'])]
     public function show(Position $position): Response
     {
         return $this->render('position/show.html.twig', [
             'position' => $position,
         ]);
+    }
+
+    #[Route('/{id}/dublicate', name: 'app_position_dublicate', methods: ['POST'])]
+    public function dublicate(Position $position, EntityManagerInterface $entityManager): Response
+    {
+        $newPosition = new Position();
+        $newPosition->setTitle($position->getTitle() . ' copy');
+        $newPosition->setDescription($position->getDescription());
+        $newPosition->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
+        foreach ($position->getAttributes() as $value) {
+            $newPosition->addAttribute($value);
+        }
+
+        $entityManager->persist($newPosition);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_position_show', ['id' => $newPosition->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/edit', name: 'app_position_edit', methods: ['GET', 'POST'])]
@@ -62,14 +83,34 @@ final class PositionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
 
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_position_show', ['id' => $position->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('position/edit.html.twig', [
             'position' => $position,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/edit/attributes', name: 'app_position_edit_attributes', methods: ['GET', 'POST'])]
+    public function editAttributes(Request $request, Position $position, AttributeCvRepository $attributeRepo, EntityManagerInterface $entityManager): Response
+    {
+
+        if ($request->getMethod() === "POST") {
+            $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
+            $attributes = $request->request->all('positionAttributes');
+            $position->getAttributes()->clear();
+            foreach ($attributes as $value) {
+                $position->addAttribute($attributeRepo->findOneBy(['id' => $value]));
+            }
+            $entityManager->flush();
+            return $this->redirectToRoute('app_position_show', ['id' => $position->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('position/attribute.html.twig', [
+            'position' => $position,
         ]);
     }
 
@@ -81,7 +122,7 @@ final class PositionController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_position_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]

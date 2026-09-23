@@ -23,9 +23,6 @@ class Position
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?bool $public = null;
-
-    #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
@@ -34,9 +31,18 @@ class Position
     #[ORM\ManyToMany(targetEntity: AttributeCv::class)]
     private Collection $attributes;
 
+    /**
+     * @var Collection<int, Cv>
+     */
+    #[ORM\ManyToMany(targetEntity: Cv::class, mappedBy: 'position')]
+    private Collection $cvs;
+
+   
+   
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
+        $this->cvs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,18 +74,6 @@ class Position
         return $this;
     }
 
-    public function isPublic(): ?bool
-    {
-        return $this->public;
-    }
-
-    public function setPublic(bool $public): static
-    {
-        $this->public = $public;
-
-        return $this;
-    }
-
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
@@ -100,19 +94,48 @@ class Position
         return $this->attributes;
     }
 
-    public function addAttribute(AttributeCv $attribute): static
+    public function addAttribute(AttributeCv $atttribute): static
     {
-        if (!$this->attributes->contains($attribute)) {
-            $this->attributes->add($attribute);
+        if (!$this->attributes->contains($atttribute)) {
+            $this->attributes->add($atttribute);
         }
 
         return $this;
     }
 
-    public function removeAttribute(AttributeCv $attribute): static
+    public function removeAttribute(AttributeCv $atttribute): static
     {
-        $this->attributes->removeElement($attribute);
+        $this->attributes->removeElement($atttribute);
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Cv>
+     */
+    public function getCvs(): Collection
+    {
+        return $this->cvs;
+    }
+
+    public function addCv(Cv $cv): static
+    {
+        if (!$this->cvs->contains($cv)) {
+            $this->cvs->add($cv);
+            $cv->addPosition($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCv(Cv $cv): static
+    {
+        if ($this->cvs->removeElement($cv)) {
+            $cv->removePosition($this);
+        }
+
+        return $this;
+    }
+
+   
 }

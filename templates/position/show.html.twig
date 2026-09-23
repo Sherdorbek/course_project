@@ -3,36 +3,84 @@
 {% block title %}Position{% endblock %}
 
 {% block body %}
-    <h1>Position</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ position.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ position.title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ position.description }}</td>
-            </tr>
-            <tr>
-                <th>Public</th>
-                <td>{{ position.public ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ position.updatedAt ? position.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class=" container d-flex justify-content-between px-4 pt-3">
+        <a class="btn btn-outline-secondary" href="{{ path('app_position') }}">Back to list</a>
+        <div class="d-flex flex-col gap-2">
+            <form action="{{ path('app_position_dublicate', {'id': position.id}) }}" method="post">
+                <button class="btn btn-outline-warning">Dublicate</button>
+            </form>
+            {{ include('position/_delete_form.html.twig') }}
+        </div>
+    </div>
+    <div class="container mt-3">
+        <div class="border rounded shadow p-4 mb-4">
+            <h3>Position details</h3>
 
-    <a href="{{ path('app_position_index') }}">back to list</a>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ position.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ position.description }}</td>
+                    </tr>
+            
+                    <tr>
+                        <th>UpdatedAt</th>
+                        <td>{{ position.updatedAt ? position.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+           
+           
 
-    <a href="{{ path('app_position_edit', {'id': position.id}) }}">edit</a>
+            <a class="btn btn-primary" href="{{ path('app_position_edit', {'id': position.id}) }}">Edit</a>
+        
+           
+        </div>
+        <div class="border rounded shadow p-4 mt-4">
+            <h3>Position Attributes</h3>
+        
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                       
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Type</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedParent">
+                    {% if position.attributes is not empty %}                
+                        {% for attribute in position.attributes %}
+                            <tr>
+                                <td>{{ attribute.name }}</td>
+                                <td>{{ attribute.category.name }}</td>
+                                <td>{{ attribute.description }}</td>
+                                <td>{{ attribute.type.name }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">No attributes added.</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No attributes added.</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            <a class="btn btn-primary mt-2" href="{{ path('app_position_edit_attributes', {id: position.id}) }}">Edit attributes</a>
+        </div>
+     <a class="btn btn-primary mt-2" href="{{ path('app_cv_new', {id: position.id}) }}">Create CV</a>
+    </div>
 
-    {{ include('position/_delete_form.html.twig') }}
+    
+
+   
 {% endblock %}

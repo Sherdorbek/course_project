@@ -55,8 +55,6 @@ final class AttributeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $manager->flush();
 
-            $this->addFlash('notice', 'The attribute has been edited');
-
             return $this->redirectToRoute('app_attributes');
         }
 
