@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\UserAttribute;
 use App\Enum\UserRoleEnum;
+use App\Repository\AttributeCvRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,6 +36,7 @@ final class OAuthController extends AbstractController
         ClientRegistry $clientRegistry,
         EntityManagerInterface $entityManager,
         Security $security,
+        AttributeCvRepository $attributeRepo
     ) {
         $client = $clientRegistry->getClient('google');
 
@@ -54,11 +57,15 @@ final class OAuthController extends AbstractController
         if (!$user) {
             $user = new User();
             $user->setEmail($email);
-            $user->setRoles([UserRoleEnum::Candidate->value]);
-            $user->setFirstName($gUser->getFirstName());
-            $user->setSurname($gUser->getLastName());
-            $user->setIsVerified(true);
+            $user->setRole(UserRoleEnum::Candidate);
             $user->setPassword(bin2hex(random_bytes(32)));
+            // foreach ($attributeRepo->findBy(['isRemovable' => false]) as $attribute) {
+            //     $attrVal = new UserAttribute();
+            //     $attrVal->setAttribute($attribute);
+            //     $attrVal->setUser($user);
+            //     $attrVal->setValString();
+            // }
+
             $entityManager->persist($user);
             $entityManager->flush();
         }

@@ -44,6 +44,12 @@ class AttributeCv
     #[Assert\Valid]
     private Collection $oneOfManies;
 
+    #[ORM\Column]
+    private ?bool $isRemovable = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $deletetedAt = null;
+
     public function __construct()
     {
         $this->oneOfManies = new ArrayCollection();
@@ -135,6 +141,30 @@ class AttributeCv
                 ->atPath('oneOfManies')
                 ->addViolation();
         }
+    }
+
+    public function isRemovable(): ?bool
+    {
+        return $this->isRemovable;
+    }
+
+    public function setIsRemovable(bool $isRemovable): static
+    {
+        $this->isRemovable = $isRemovable;
+
+        return $this;
+    }
+
+    public function getDeletetedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletetedAt;
+    }
+
+    public function setDeletetedAt(?\DateTimeImmutable $deletetedAt): static
+    {
+        $this->deletetedAt = $deletetedAt;
+
+        return $this;
     }
 
 }
