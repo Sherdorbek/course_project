@@ -56,15 +56,11 @@ final class OAuthController extends AbstractController
 
         if (!$user) {
             $user = new User();
+
             $user->setEmail($email);
             $user->setRole(UserRoleEnum::Candidate);
+            $user->setProfileSetUp(false);
             $user->setPassword(bin2hex(random_bytes(32)));
-            // foreach ($attributeRepo->findBy(['isRemovable' => false]) as $attribute) {
-            //     $attrVal = new UserAttribute();
-            //     $attrVal->setAttribute($attribute);
-            //     $attrVal->setUser($user);
-            //     $attrVal->setValString();
-            // }
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -101,11 +97,10 @@ final class OAuthController extends AbstractController
         if (!$user) {
             $user = new User();
             $user->setEmail($email);
-            $user->setRoles(['ROLE_USER']);
+            $user->setRole(UserRoleEnum::Candidate);
             $user->setFirstName($gUser->getFirstName());
             $user->setSurname($gUser->getLastName());
             $user->setAvatar($gUser->getAvatar());
-            $user->setIsVerified(true);
             $user->setPassword(bin2hex(random_bytes(32)));
         }
 

@@ -45,10 +45,10 @@ class AttributeCv
     private Collection $oneOfManies;
 
     #[ORM\Column]
-    private ?bool $isRemovable = null;
+    private ?bool $isRemovable = true;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $deletetedAt = null;
+    #[ORM\Column]
+    private ?int $version = 0;
 
     public function __construct()
     {
@@ -155,14 +155,14 @@ class AttributeCv
         return $this;
     }
 
-    public function getDeletetedAt(): ?\DateTimeImmutable
+    public function getVersion(): ?int
     {
-        return $this->deletetedAt;
+        return $this->version;
     }
 
-    public function setDeletetedAt(?\DateTimeImmutable $deletetedAt): static
+    public function setVersion(int $version): static
     {
-        $this->deletetedAt = $deletetedAt;
+        $this->version = $version;
 
         return $this;
     }

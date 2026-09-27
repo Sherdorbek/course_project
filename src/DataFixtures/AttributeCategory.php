@@ -20,12 +20,23 @@ class AttributeCategory extends Fixture
             $manager->persist($category);
         }
 
-        $attributes = ['First Name','Last Name','Location','Personal photo','Email','Phone Number'];
-        foreach ($attributes as $attribute) {
+        $manager->flush();
+
+        
+        $attributes = [
+            'First Name' => AttributeTypeEnum::StringType,
+            'Last Name' => AttributeTypeEnum::StringType,
+            'Location' => AttributeTypeEnum::StringType,
+            'Personal photo' =>AttributeTypeEnum::ImageType,
+            'Phone Number'=>AttributeTypeEnum::StringType
+        ];
+        $personalCategory = $manager->getRepository(EntityAttributeCategory::class)->findOneBy(['id' => 1]);
+
+        foreach ($attributes as $name => $type) {
             $newAttr = new AttributeCv();
-            $newAttr->setCategory($manager->getRepository(EntityAttributeCategory::class)->findOneBy(['name'=>'Personal information']));
-            $newAttr->setName($attribute);
-            $newAttr->setType(AttributeTypeEnum::StringType);
+            $newAttr->setCategory($personalCategory);
+            $newAttr->setName($name);
+            $newAttr->setType($type);
             $newAttr->setIsRemovable(false);
             $manager->persist($newAttr);
         }

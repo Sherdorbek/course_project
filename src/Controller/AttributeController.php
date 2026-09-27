@@ -28,10 +28,10 @@ final class AttributeController extends AbstractController
     {
         $attr = new AttributeCv();
         $form = $this->createForm(AttributeType::class, $attr);
-        
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($attr->getOneOfManies() as $option){
+            foreach ($attr->getOneOfManies() as $option) {
                 $option->setAttribute($attr);
             }
             $manager->persist($attr);
@@ -73,13 +73,21 @@ final class AttributeController extends AbstractController
             $repository = $manager->getRepository(AttributeCv::class);
 
             $attributes = $repository->findBy(['id' => $ids]);
+            $deleted = 0;
 
             foreach ($attributes as $attribute) {
-                $manager->remove($attribute);
+                if ($attribute->isRemovable()) {
+                    $manager->remove($attribute);
+                    $deleted++;
+                } else {
+                    $this->addFlash('notice', $attribute->getName() . ' attribute cannot be deleted');
+                }
             }
 
             $manager->flush();
-            $this->addFlash('success', count($attributes).' attribute(s) deleted successfully.');
+            if ($deleted > 0) {
+                $this->addFlash('success', $deleted . ' attribute(s) deleted successfully.');
+            }
         }
 
         return $this->redirect('app_attributes');

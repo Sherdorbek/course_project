@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Welcome this is your profile {{ app.user.email }}</h1>
+        {% if not app.user.profileSetUp %}
+            <h3>Set up your profile </h3>   
+            <a href="{{ path('user_new_profile') }}"> Lets go</a>
+        {% endif %}
+
+    </div>
+{% endblock %}

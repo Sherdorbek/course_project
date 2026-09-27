@@ -40,15 +40,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $avatar = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $firstname = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $surname = null;
-
     /**
      * @var Collection<int, Cv>
      */
@@ -60,6 +51,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: UserAttribute::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userAttributes;
+
+    #[ORM\Column]
+    private ?bool $profileSetUp = null;
 
     public function __construct()
     {
@@ -164,42 +158,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAvatar(): ?string
-    {
-        return $this->avatar;
-    }
-
-    public function setAvatar(?string $avatar): static
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    public function getFirstname(): ?string
-    {
-        return $this->firstname;
-    }
-
-    public function setFirstname(string $firstname): static
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getSurname(): ?string
-    {
-        return $this->surname;
-    }
-
-    public function setSurname(?string $surname): static
-    {
-        $this->surname = $surname;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Cv>
      */
@@ -256,6 +214,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userAttribute->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isProfileSetUp(): ?bool
+    {
+        return $this->profileSetUp;
+    }
+
+    public function setProfileSetUp(bool $profileSetUp): static
+    {
+        $this->profileSetUp = $profileSetUp;
 
         return $this;
     }
