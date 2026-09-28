@@ -4,7 +4,7 @@
             <thead class="table-light">
                 <tr>
                     <th scope="col" style="width: 40px;">
-                        <input class="form-check-input" type="checkbox" data-action="change->checkbox#toggle change->search-attribute#toggleAdd">
+                       s
                     </th>
                     <th scope="col">Name</th>
                     <th scope="col">Category</th>
@@ -18,19 +18,15 @@
                             <td>
                                 <input
                                     class="form-check-input"
-                                    type="checkbox"
-                                    value="{{ searchAttribute.id }}"
-                                    data-checkbox-target="checkbox"
-                                    data-search-attribute-target="checkbox"
-                                    data-search-attribute-name-param="{{ searchAttribute.name }}"
-                                    data-search-attribute-category-param="{{ searchAttribute.category.name }}"
-                                    data-search-attribute-type-param="{{ searchAttribute.type.name }}"
-                                    data-action="change->search-attribute#toggleAdd"
+                                    type="radio"
+                                    name="selectedAttribute"
+                                    value="{{searchAttribute.id}}"
+                                    data-action="change->search-attribute#showAdd"
                                 >
                             </td>
                             <td>{{ searchAttribute.name }}</td>
                             <td>{{ searchAttribute.category.name }}</td>
-                            <td>{{ searchAttribute.type.name }}</td>
+                            <td>{{ searchAttribute.type.value }}</td>
                         </tr>
                     {% else %}
                         <tr>

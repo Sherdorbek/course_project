@@ -1,10 +1,11 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ['add', 'checkbox'];
+    static targets = ['add', 'checkbox', 'radio'];
 
     static values = {
         url: String,
+        fieldUrl:String
     }
 
     search(e) {
@@ -14,6 +15,7 @@ export default class extends Controller {
             frame: 'search-result'
         });
     }
+
 
     toggleAdd() {
         let hasChecked = false;
@@ -32,6 +34,12 @@ export default class extends Controller {
             this.addTarget.classList.add('d-none');
         }
     }
+    showAdd() {
+        this.addTarget.classList.remove('d-none');
+    }
+
+
+
 
 
     addAttribute() {
@@ -39,7 +47,7 @@ export default class extends Controller {
         const selectedIds = [];
         const selectedAttributes = document.querySelectorAll('input[name="positionAttributes[]"]');
         const template = document.getElementById('template-attribute');
-        
+
         for (let e of selectedAttributes) {
             selectedIds.push(e.value);
         }
@@ -61,17 +69,17 @@ export default class extends Controller {
             }
         }
     }
-    addToUser(){
-        
+    addUserAttribute() {
+
         const selectedIds = [];
-        
+
         // for (let e of selectedAttributes) {
         //     selectedIds.push(e.value);
         // }
 
         for (let e of this.checkboxTargets) {
             if (e.checked) {
-                selectedIds.push(e.value);        
+                selectedIds.push(e.value);
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AttributeCv;
 use App\Entity\User;
 use App\Entity\UserAttribute;
+use App\Enum\AttributeTypeEnum;
 use App\Form\SetupUserType;
 use App\Form\UserProfileType;
 use App\Repository\AttributeCvRepository;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\UX\Turbo\TurboFrame;
+use App\Service\FilestackImageUploader;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class ProfileController extends AbstractController
 {
@@ -25,7 +28,8 @@ final class ProfileController extends AbstractController
         #[CurrentUser] User $user,
         Request $request,
         EntityManagerInterface $em,
-        TurboFrame $turboFrame, 
+        TurboFrame $turboFrame,
+        FilestackImageUploader $imageUploader,
     ): Response {
         if (!$user->isProfileSetUp()) {
             return $this->redirectToRoute('user_profile_setup');
@@ -35,6 +39,19 @@ final class ProfileController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($form->get('userAttributes') as $userAttributeForm) {
+                if (!$userAttributeForm->has('imageFile')) {
+                    continue;
+                }
+
+                $image = $userAttributeForm->get('imageFile')->getData();
+
+                if ($image instanceof UploadedFile) {
+                    $userAttributeForm
+                        ->getData()
+                        ->setValImage($imageUploader->upload($image));
+                }
+            }
             $em->flush();
         }
 
@@ -91,23 +108,38 @@ final class ProfileController extends AbstractController
     public function searchAttribute(
         #[CurrentUser] User $user,
         Request $request,
+        AttributeCvRepository $attrManager,
+        UserAttributeRepository $uaManager,
         EntityManagerInterface $em,
-        TurboFrame $turboFrame, 
     ): Response {
         if (!$user->isProfileSetUp()) {
             return $this->redirectToRoute('user_profile_setup');
         }
 
-        
+        if ($request->getMethod() === "POST") {
+            $attributeId = $request->request->get('selectedAttribute');
+            $attribute = $attrManager->findOneBy(['id' => $attributeId]);
+            if (is_null($uaManager->findOneBy(['user' => $user, 'attribute' => $attribute]))) {
+                $newUa = new UserAttribute();
+                $newUa->setAttribute($attribute);
+                $newUa->setUser($user);
+                if ($attribute->getType() === AttributeTypeEnum::BoolType)
+                    $newUa->setValue(false, $attribute->getType());
+                $user->addUserAttribute($newUa);
+                $em->flush();
+                $this->addFlash('success', 'New attribute added');
+            } else {
+                $this->addFlash('notice', 'User already has this attribute');
+            }
 
-        // if ($turboFrame->isFrameRequest()) {
-        //     return $this->render('profile/_form.html.twig', [
-        //     ], new Response(null, 200));
-        // }
+            $em->flush();
+            return $this->redirectToRoute('user_profile');
+        }
+        $q = $request->query->get('q') ?? 0;
+        $attributes = $attrManager->searchByPrefix($q);
 
-        return $this->render('profile/attrs.html.twig', [
+        return $this->render('profile/search.html.twig', [
+            'searchAttributes' => $attributes,
         ]);
     }
-
-
 }

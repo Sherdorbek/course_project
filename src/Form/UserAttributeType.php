@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,6 +19,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserAttributeType extends AbstractType
@@ -45,13 +47,21 @@ class UserAttributeType extends AbstractType
                     ]);
                     break;
                 case AttributeTypeEnum::ImageType:
-                    $form->add('valImage', TextType::class, [
+                    $form->add('imageFile', FileType::class, [
                         'label' => $attribute->getName(),
-                        'constraints' => [new NotBlank()],
+                        'mapped' => false,
+                        'required' => false,
+                        'constraints' => [
+                            new Image(
+                                maxSize: '5M',
+                                mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                            ),
+                        ],
                     ]);
                     break;
                 case AttributeTypeEnum::NumericType:
                     $form->add('valNumber', NumberType::class, [
+                        'html5' => true,
                         'label' => $attribute->getName(),
                         'constraints' => [new NotBlank()],
                     ]);
@@ -73,14 +83,21 @@ class UserAttributeType extends AbstractType
                     ]);
                     break;
                 case AttributeTypeEnum::BoolType:
-                    $form->add('valString', CheckboxType::class, [
+                    $form->add('valBool', CheckboxType::class, [
                         'label' => $attribute->getName(),
-                        'constraints' => [new NotBlank()],
                     ]);
                     break;
                 case AttributeTypeEnum::OneOfMany:
-                    $form->add('valString', ChoiceType::class, [
+                    $choices = [];
+
+                    foreach ($attribute->getOneOfManies() as $option) {
+                        $choices[$option->getValue()] = $option->getValue();
+                    }
+
+                    $form->add('valDropdown', ChoiceType::class, [
                         'label' => $attribute->getName(),
+                        'choices' => $choices,
+                        'placeholder' => 'Select an option',
                         'constraints' => [new NotBlank()],
                     ]);
                     break;

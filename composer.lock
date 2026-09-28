@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f2046a8fccea77f7550099512fb754c",
+    "content-hash": "6ed8175726cad1fd9310a6cd7bccc9a2",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -2841,6 +2841,49 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "filestack/filestack-php",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filestack/filestack-php.git",
+                "reference": "66718d4625dceae0c710ec8be5fb9efc9e0fcc12"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filestack/filestack-php/zipball/66718d4625dceae0c710ec8be5fb9efc9e0fcc12",
+                "reference": "66718d4625dceae0c710ec8be5fb9efc9e0fcc12",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~7.8",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "php-coveralls/php-coveralls": "^2.2",
+                "phpmd/phpmd": "@stable",
+                "phpunit/phpunit": "^9.0",
+                "theseer/phpdox": "^0.7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Filestack\\": "filestack",
+                    "Filestack\\Mixins\\": "filestack/mixins"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "A Filestack library for PHP",
+            "support": {
+                "issues": "https://github.com/filestack/filestack-php/issues",
+                "source": "https://github.com/filestack/filestack-php/tree/2.0.1"
+            },
+            "time": "2024-09-18T18:11:51+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -14297,7 +14340,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -14305,6 +14348,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.9.0"
 }

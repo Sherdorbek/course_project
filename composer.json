@@ -15,6 +15,7 @@
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.7",
         "easycorp/easyadmin-bundle": "^5.6",
+        "filestack/filestack-php": "^2.0",
         "knpuniversity/oauth2-client-bundle": "^2.20",
         "league/oauth2-facebook": "^2.2",
         "league/oauth2-google": "*",

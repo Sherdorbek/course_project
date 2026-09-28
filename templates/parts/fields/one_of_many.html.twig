@@ -1,6 +1,6 @@
 <div class="mb-3">
   <label for="text" class="form-label">{{ attribute.name }}</label>
-  <select class="form-select" name="attribute[one_of_many][{{attribute.id}}]">
+  <select class="form-select" name="value">
     <option value="-1" selected>Select</option>
     {% for option in attribute.oneOfManies %}
        <option value="{{option.id}}">{{option.value}}</option>

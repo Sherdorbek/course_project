@@ -1,11 +1,49 @@
 <twig:Turbo:Frame id="attributes">
-  {{ form_start(form, {
-      action: path('user_profile'),
-      attr: {
-          'data-autosave-target': 'form',
-          novalidate: 'novalidate',
-      }
-  }) }}
-  {{ form_widget(form) }}
-  {{ form_end(form) }}
+    {{ form_start(form, {
+        action: path('user_profile'),
+        attr: {
+            'data-autosave-target': 'form',
+            novalidate: 'novalidate',
+        }
+    }) }}
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">     
+                <h3 class="card-title mb-0"><i class="fa-regular fa-circle-user"></i> Me </h3>
+                <div class="text-secondary fs-4"><i class="fa-regular fa-envelope"></i> {{ user.email }}</div>
+            </div>  
+            <div class="p-3">
+                {% for attributeField in form.userAttributes %}
+                    {% if not attributeField.vars.data.attribute.isRemovable %}
+                        {{ form_row(attributeField) }}
+                        {% if attributeField.vars.data.valImage %}
+                            <img
+                                src="{{ attributeField.vars.data.valImage }}"
+                                alt=""
+                                class="img-thumbnail mb-2"
+                                style="max-width: 180px"
+                            >
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title"><i class="fa-solid fa-circle-info"></i> Info</h3>
+            <div class="p-3">
+                {% for attributeField in form.userAttributes %}
+                    {% if attributeField.vars.data.attribute.isRemovable %}
+                        {{ form_row(attributeField) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+           
+        </div>
+    </div>
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
 </twig:Turbo:Frame>
