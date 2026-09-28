@@ -4,12 +4,35 @@
 
 {% block body %}
 
-    <div class="container">
-        <h1>Welcome this is your profile {{ app.user.email }}</h1>
-        {% if not app.user.profileSetUp %}
-            <h3>Set up your profile </h3>   
-            <a href="{{ path('user_new_profile') }}"> Lets go</a>
-        {% endif %}
+    <div class="container" data-controller="autosave">
+        <h3>Welcome this is your profile {{ user.email }}</h3>
+        
+        <div class="card">
+            <div class="card-body">  
+                <div class="d-flex justify-content-between align-items-center">     
+                    <h3 class="card-title mb-0"><i class="fa-regular fa-circle-user"></i> Me </h3>
+                    <div class="text-secondary fs-4"><i class="fa-regular fa-envelope"></i> {{ user.email }}</div>
+                </div>  
+                <div class="mt-4 mx-4">  
+                    {{ include('profile/_form.html.twig', { user: user, form: form }) }}
+                </div>
+            </div>
+        </div>
 
+        <div class="card">
+            <div class="card-body">  
+                <div class="d-flex justify-content-between align-items-center">     
+                    <h3 class="card-title mb-0"><i class="fa-regular fa-circle-user"></i>Attributes</h3>
+                </div>  
+                <div class="mt-4 mx-4">  
+                    <twig:Turbo:Frame id="searchAttribute">
+                        <form action="{{path('user_add_attribute')}}" method="get">
+                            <button class="btn btn-success">Search</button>
+                        </form>
+                    </twig:Turbo:Frame>
+                </div>
+            </div>
+        </div>
+        
     </div>
 {% endblock %}

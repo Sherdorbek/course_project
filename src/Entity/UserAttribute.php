@@ -2,11 +2,16 @@
 
 namespace App\Entity;
 
+use App\Enum\AttributeTypeEnum;
 use App\Repository\UserAttributeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserAttributeRepository::class)]
+#[ORM\Table(name: '`user_attribute`')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_ATTRIBUTE', fields: ['user', 'attribute'])]
+#[UniqueEntity(fields: ['user', 'attribute'], message: 'This attribute is already set for this user.')]
 class UserAttribute
 {
     #[ORM\Id]
@@ -167,6 +172,53 @@ class UserAttribute
     public function setValNumber(?string $valNumber): static
     {
         $this->valNumber = $valNumber;
+
+        return $this;
+    }
+
+    public function getValue(): mixed
+    {
+        return match ($this->attribute->getType()) {
+            AttributeTypeEnum::StringType => $this->valString,
+            AttributeTypeEnum::TextType => $this->valText,
+            AttributeTypeEnum::ImageType => $this->valImage,
+            AttributeTypeEnum::NumericType => $this->valNumber,
+            AttributeTypeEnum::DateType => $this->valDate,
+            AttributeTypeEnum::PeriodType => [$this->valDate, $this->valDatePeriod],
+            AttributeTypeEnum::BoolType => $this->valBool,
+            AttributeTypeEnum::OneOfMany => $this->valDropdown,
+        };
+    }
+
+    public function setValue(mixed $value, AttributeTypeEnum $type): static
+    {
+        switch ($type) {
+            case AttributeTypeEnum::StringType:
+                $this->valString = $value;
+                break;
+            case AttributeTypeEnum::TextType:
+                $this->valText = $value;
+                break;
+            case AttributeTypeEnum::ImageType:
+                $this->valImage = $value;
+                break;
+            case AttributeTypeEnum::NumericType:
+                $this->valNumber = $value;
+                break;
+            case AttributeTypeEnum::DateType:
+                $this->valDate = $value;
+                break;
+            case AttributeTypeEnum::PeriodType:
+                $this->valDate = $value[0];
+                $this->valDatePeriod = $value[1];
+                break;
+            case AttributeTypeEnum::BoolType:
+                $this->valBool = $value;
+                break;
+            case AttributeTypeEnum::OneOfMany:
+                $this->valDropdown = $value;
+                break;
+        }
 
         return $this;
     }

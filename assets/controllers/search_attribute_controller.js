@@ -39,8 +39,7 @@ export default class extends Controller {
         const selectedIds = [];
         const selectedAttributes = document.querySelectorAll('input[name="positionAttributes[]"]');
         const template = document.getElementById('template-attribute');
-        console.log(template);
-
+        
         for (let e of selectedAttributes) {
             selectedIds.push(e.value);
         }
@@ -61,5 +60,23 @@ export default class extends Controller {
                 selectedIds.push(e.value);
             }
         }
+    }
+    addToUser(){
+        
+        const selectedIds = [];
+        
+        // for (let e of selectedAttributes) {
+        //     selectedIds.push(e.value);
+        // }
+
+        for (let e of this.checkboxTargets) {
+            if (e.checked) {
+                selectedIds.push(e.value);        
+            }
+        }
+
+        Turbo.visit()
+        console.log(selectedIds);
+        1
     }
 }
