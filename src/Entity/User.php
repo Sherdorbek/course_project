@@ -40,12 +40,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-    /**
-     * @var Collection<int, Cv>
-     */
-    #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $cvs;
-
+   
     /**
      * @var Collection<int, UserAttribute>
      */
@@ -55,10 +50,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $profileSetUp = null;
 
+    /**
+     * @var Collection<int, Cv>
+     */
+    #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'user')]
+    private Collection $cvs;
+
     public function __construct()
     {
-        $this->cvs = new ArrayCollection();
         $this->userAttributes = new ArrayCollection();
+        $this->cvs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,35 +159,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Cv>
-     */
-    public function getCvs(): Collection
-    {
-        return $this->cvs;
-    }
-
-    public function addCv(Cv $cv): static
-    {
-        if (!$this->cvs->contains($cv)) {
-            $this->cvs->add($cv);
-            $cv->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCv(Cv $cv): static
-    {
-        if ($this->cvs->removeElement($cv)) {
-            // set the owning side to null (unless already changed)
-            if ($cv->getUser() === $this) {
-                $cv->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, UserAttribute>
@@ -226,6 +198,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfileSetUp(bool $profileSetUp): static
     {
         $this->profileSetUp = $profileSetUp;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cv>
+     */
+    public function getCvs(): Collection
+    {
+        return $this->cvs;
+    }
+
+    public function addCv(Cv $cv): static
+    {
+        if (!$this->cvs->contains($cv)) {
+            $this->cvs->add($cv);
+            $cv->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCv(Cv $cv): static
+    {
+        if ($this->cvs->removeElement($cv)) {
+            // set the owning side to null (unless already changed)
+            if ($cv->getUser() === $this) {
+                $cv->setUser(null);
+            }
+        }
 
         return $this;
     }

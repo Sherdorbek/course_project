@@ -34,15 +34,15 @@ class Position
     /**
      * @var Collection<int, Cv>
      */
-    #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'position')]
+    #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'position', orphanRemoval: true)]
     private Collection $cvs;
-   
+
    
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
         $this->cvs = new ArrayCollection();
-       
+ 
     }
 
     public function getId(): ?int
@@ -139,6 +139,8 @@ class Position
 
         return $this;
     }
+
+   
 
 
 

@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/cv')]
 final class CvController extends AbstractController
@@ -29,13 +30,13 @@ final class CvController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/new', name: 'app_cv_new', methods: ['GET', 'POST'])]
-    public function new(Position $position, Request $request, EntityManagerInterface $entityManager): Response
+    public function new(#[CurrentUser] User $user, Position $position, Request $request, EntityManagerInterface $entityManager): Response
     {
         $cv = new Cv();
         $cv->setPosition($position);
+        $cv->setUser($user);
         if ($request->getMethod() === "POST") {
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => 'a@a.com']);
             $cvValues = $request->request->all('attribute');
 
             foreach ($position->getAttributes() as $attribute) {

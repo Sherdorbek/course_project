@@ -142,4 +142,29 @@ final class ProfileController extends AbstractController
             'searchAttributes' => $attributes,
         ]);
     }
+
+     #[Route('/profile/attribute/remove', name: 'user_remove_attribute', methods: ["GET", "POST"])]
+    public function deleteAttribute(
+        #[CurrentUser] User $user,
+        Request $request,
+        AttributeCvRepository $attrManager,
+        UserAttributeRepository $uaManager,
+        EntityManagerInterface $em,
+    ): Response {
+        
+        if ($request->getMethod() === "POST") {
+            $uaIndexes = $request->request->all('selectedUserAttributes');
+            $uas = $uaManager->findBy(['id'=>$uaIndexes]);
+            foreach ($uas as $value) {
+                $user->removeUserAttribute($value);
+            }
+            $em->flush();
+            return $this->redirectToRoute('user_profile');
+        }
+
+
+        return $this->render('profile/remove.html.twig', [
+            'user' => $user,
+        ]);
+    }
 }
