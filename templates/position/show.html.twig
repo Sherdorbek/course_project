@@ -6,8 +6,11 @@
 
     <div class=" container d-flex justify-content-between px-4 pt-3">
         <a class="btn btn-outline-secondary" href="{{ path('app_position') }}">Back to list</a>
+        <div>
+            <a class="btn btn-outline-success px-3" href="{{ path('app_cv_index', {position: position.id}) }}"><i class="fa-regular fa-file-lines"></i> Cvs ( {{ position.cvs|length }} ) </a>
+        </div>
         <div class="d-flex flex-col gap-2">
-            <a class="btn btn-primary" href="{{ path('app_cv_new', {id: position.id}) }}">Create CV</a>
+            <a class="btn btn-primary" href="{{ path('app_cv_new', {position: position.id}) }}">Create CV</a>
             <form action="{{ path('app_position_dublicate', {'id': position.id}) }}" method="post">
                 <button class="btn btn-outline-warning">Dublicate</button>
             </form>

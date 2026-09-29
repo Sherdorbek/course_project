@@ -33,4 +33,6 @@ return [
     'bootstrap/dist/js/bootstrap.bundle.min.js' => ['version' => '5.3.8'],
     '@fortawesome/fontawesome-free/css/all.css' => ['version' => '7.3.1', 'type' => 'css'],
     'sortablejs' => ['version' => '1.15.7'],
+    'filepond' => ['version' => '4.32.12'],
+    'filepond/dist/filepond.min.css' => ['version' => '4.32.12', 'type' => 'css'],
 ];

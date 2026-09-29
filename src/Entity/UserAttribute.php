@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Enum\AttributeTypeEnum;
 use App\Repository\UserAttributeRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -206,11 +207,11 @@ class UserAttribute
                 $this->valNumber = $value;
                 break;
             case AttributeTypeEnum::DateType:
-                $this->valDate = $value;
+                $this->valDate = new DateTimeImmutable($value);
                 break;
             case AttributeTypeEnum::PeriodType:
-                $this->valDate = $value[0];
-                $this->valDatePeriod = $value[1];
+                $this->valDate = new DateTimeImmutable($value[0]);
+                $this->valDatePeriod = new DateTimeImmutable($value[1]);
                 break;
             case AttributeTypeEnum::BoolType:
                 $this->valBool = $value;

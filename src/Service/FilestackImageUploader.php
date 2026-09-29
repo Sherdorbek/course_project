@@ -13,8 +13,10 @@ final class FilestackImageUploader
     private string $apiKey,
   ) {}
 
-  public function upload(UploadedFile $image): string
+  public function upload(?UploadedFile $image): string
   {
+    if ($image === null) return '';  
+
     $client = new FilestackClient($this->apiKey);
 
     $filelink = $client->upload($image->getPathname(), ['filename' => bin2hex(random_bytes(16)) . '.png']);

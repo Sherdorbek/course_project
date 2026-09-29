@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ed8175726cad1fd9310a6cd7bccc9a2",
+    "content-hash": "e8a0c7fd55a0f7f34dd5ca0592f78adf",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -2841,6 +2841,42 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "enyo/dropzone",
+            "version": "v6.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/enyo/dropzone-packagist",
+                "reference": "ef582f48942635bb3bf30c2a50d80c10d4ea96f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/enyo/dropzone-packagist/zipball/ef582f48942635bb3bf30c2a50d80c10d4ea96f8",
+                "reference": "ef582f48942635bb3bf30c2a50d80c10d4ea96f8",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matias Simon",
+                    "email": "m@tias.me",
+                    "homepage": "https://www.matsimon.dev"
+                }
+            ],
+            "description": "Handles drag and drop of files for you.",
+            "homepage": "https://www.dropzone.dev/",
+            "keywords": [
+                "drag and drop",
+                "dragndrop",
+                "file upload",
+                "upload"
+            ],
+            "time": "2026-09-27T22:08:28+00:00"
         },
         {
             "name": "filestack/filestack-php",

@@ -1,19 +1,7 @@
-<form method="post" action="{{ path('app_cv_new', {id: cv.position.id}) }}">
-   
-    {% for category in categories %}
-        <div class="card shadow my-2 p-4">
-            <h5 class="card-title">{{ category.name }}</h5>
-            <div class="card-body">
-                {% for attribute in cv.position.attributes %}
-                    {% if category.name == attribute.category.name %}
-                        {% include "cv/fields/" ~ attribute.type.value ~ ".html.twig" %}
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    {% endfor %}
-            
-    <div class="d-flex my-3">
-        <input type="submit" value="Save" class="ms-auto btn btn-primary px-4">
-    </div>
-</form>
+{{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+
+{{ form_rest(form) }}
+
+<button class="btn btn-primary">Save</button>
+
+{{ form_end(form) }}

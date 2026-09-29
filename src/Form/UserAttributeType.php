@@ -78,7 +78,7 @@ class UserAttributeType extends AbstractType
                         'constraints' => [new NotBlank()],
                     ]);
                     $form->add('valDatePeriod', DateType::class, [
-                        'label' => $attribute->getName(),
+                        'label' => false,
                         'constraints' => [new NotBlank()],
                     ]);
                     break;
@@ -91,7 +91,7 @@ class UserAttributeType extends AbstractType
                     $choices = [];
 
                     foreach ($attribute->getOneOfManies() as $option) {
-                        $choices[$option->getValue()] = $option->getValue();
+                        $choices[$option->getValue()] = $option->getId();
                     }
 
                     $form->add('valDropdown', ChoiceType::class, [

@@ -15,13 +15,28 @@
             <a class="btn btn-danger" href="{{ path('user_remove_attribute') }}"><i class="fa-regular fa-trash-can"></i> Remove Attribute</a>
         </div>
       
-        <div class="card">
+        <div class="card my-4">
             <div class="card-body">  
                 <div class="d-flex justify-content-between align-items-center">     
                     <h3 class="card-title mb-0"><i class="fa-regular fa-folder-open"></i>Projects</h3>
                 </div>  
             </div>
         </div>
+
+        <div class="card my-4">
+            <div class="card-body">  
+                <div class="d-flex justify-content-between align-items-center">     
+                    <h3 class="card-title mb-0"><i class="fa-regular fa-file-lines"></i> Cvs</h3>
+                </div>
+
+                <div>
+                    {% for cv in user.cvs %}
+                        {{ cv.position.title }}
+                    {% endfor %}
+                </div>  
+            </div>
+        </div>
+        
         
     </div>
 {% endblock %}

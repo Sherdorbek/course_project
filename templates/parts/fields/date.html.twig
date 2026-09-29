@@ -1,4 +1,4 @@
 <div class="mb-3">
   <label class="form-label">{{attribute.name}}</label>
-  <input type="date" class="form-control" name="value" />
+  <input type="date" class="form-control" name="attribute[{{attribute.id}}]" value="{{value|date('Y-m-d')}}"/>
 </div>

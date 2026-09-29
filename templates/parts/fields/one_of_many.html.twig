@@ -1,9 +1,14 @@
 <div class="mb-3">
   <label for="text" class="form-label">{{ attribute.name }}</label>
-  <select class="form-select" name="value">
+  <select class="form-select" name="attribute[{{ attribute.id }}]">
     <option value="-1" selected>Select</option>
     {% for option in attribute.oneOfManies %}
-       <option value="{{option.id}}">{{option.value}}</option>
+      <option
+        value="{{ option.id }}"
+        {% if value == option.id %}
+        selected
+        {% endif %}
+      >{{ option.value }}</option>
     {% endfor %}
   </select>
 </div>

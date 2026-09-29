@@ -4,6 +4,7 @@
         attr: {
             'data-autosave-target': 'form',
             novalidate: 'novalidate',
+             'data-controller': 'file-upload',
         }
     }) }}
 
@@ -16,15 +17,21 @@
             <div class="p-3">
                 {% for attributeField in form.userAttributes %}
                     {% if not attributeField.vars.data.attribute.isRemovable %}
-                        {{ form_row(attributeField) }}
                         {% if attributeField.vars.data.valImage %}
+                            <label>{{ attributeField.vars.data.attribute.name }}</label>
+                            {{ form_widget(attributeField,{ attr: {
+                                'data-file-upload-target': 'input',
+                            }}) }}
                             <img
                                 src="{{ attributeField.vars.data.valImage }}"
                                 alt=""
                                 class="img-thumbnail mb-2"
                                 style="max-width: 180px"
                             >
+                        {% else %}
+                            {{ form_row(attributeField) }}
                         {% endif %}
+
                     {% endif %}
                 {% endfor %}
             </div>
@@ -37,7 +44,20 @@
             <div class="p-3">
                 {% for attributeField in form.userAttributes %}
                     {% if attributeField.vars.data.attribute.isRemovable %}
-                        {{ form_row(attributeField) }}
+                        {% if attributeField.vars.data.valImage %}
+                            <label>{{ attributeField.vars.data.attribute.name }}</label>
+                            {{ form_widget(attributeField,{ attr: {
+                                'data-file-upload-target': 'input',
+                            }}) }}
+                            <img
+                                src="{{ attributeField.vars.data.valImage }}"
+                                alt=""
+                                class="img-thumbnail mb-2"
+                                style="max-width: 180px"
+                            >
+                        {% else %}
+                            {{ form_row(attributeField) }}
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>

@@ -5,12 +5,22 @@
 {% block body %}
 
     <div class="container mt-2" style="max-width:700px">
-            <h3 class="text-center">New Cv</h3>
+        <h3 class="text-center">Cv for {{ position.title }} position</h3>
         <div class="d-flex justify-content-between mt-3 align-items-center">
-            <a class="btn btn-outline-secondary" href="{{ path('app_position_show',{id:cv.position.id}) }}">back to Position</a>
+            <a class="btn btn-outline-secondary" href="{{ path('app_position_show', {id: position.id}) }}">back to Position</a>
         </div>
 
-        {{ include('cv/_form.html.twig') }}
+        <div class="border rounded my-3 p-3">
+            <form method="post" action="{{ path('app_cv_new', {id: position.id}) }}"  enctype="multipart/form-data">
+                {% for attribute in position.attributes %}
+                    {% set userValue = userValues[attribute.id].value ?? null %}
+                    {% include 'parts/fields/' ~ attribute.type.value ~ '.html.twig' with { value : userValue } %}
+                {% endfor %}            
+
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+            
+        </div>
 
     </div>
     

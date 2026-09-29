@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AttributeCv;
 use App\Entity\Position;
 use App\Entity\PositionAttr;
 use App\Form\PositionType;
@@ -33,7 +34,10 @@ final class PositionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $attributes = $entityManager->getRepository(AttributeCv::class)->findBy(['isRemovable' => false]);
+            foreach ($attributes as $attribute) {
+                $position->addAttribute($attribute);
+            }
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
             $entityManager->persist($position);
 
@@ -48,6 +52,17 @@ final class PositionController extends AbstractController
         ]);
     }
 
+    #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]
+    public function deleteAll(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $positionIds = $request->request->all('selectedPositions');
+        $positions = $entityManager->getRepository(Position::class)->findBy(['id' => $positionIds]);
+        foreach ($positions as $position) {
+            $entityManager->remove($position);
+        }
+        $entityManager->flush();
+        return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
+    }
 
 
     #[Route('/{id}', name: 'app_position_show', methods: ['GET'])]
@@ -124,15 +139,5 @@ final class PositionController extends AbstractController
 
         return $this->redirectToRoute('app_position', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/delete', name: 'app_position_delete_all', methods: ['POST'])]
-    public function deleteAll(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        return $this->redirectToRoute('app_position_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    //
-    // ATTRIBUTE ROUTS
-    //
 
 }

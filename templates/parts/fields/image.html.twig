@@ -1,4 +1,13 @@
-<div class="mb-3">
-  <label  class="form-label">{{attribute.name}}</label>
-  <input type="text" class="form-control" name="value">
+<div class="mb-3" data-controller="file-upload">
+  <label class="form-label">{{ attribute.name }}</label>
+  <input
+    type="file"
+    name="attribute[{{ attribute.id }}]"
+    accept="image/*"
+    data-file-upload-target="input"
+    accept="image/*"
+  >
+  {% if value %}
+    <img src="{{ value }}" alt="{{ attribute.name }}" height="300" class="border rounded p-1">
+  {% endif %}
 </div>

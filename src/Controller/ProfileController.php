@@ -147,7 +147,6 @@ final class ProfileController extends AbstractController
     public function deleteAttribute(
         #[CurrentUser] User $user,
         Request $request,
-        AttributeCvRepository $attrManager,
         UserAttributeRepository $uaManager,
         EntityManagerInterface $em,
     ): Response {

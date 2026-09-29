@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use App\Repository\CvRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CvRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_CV', fields: ['position','user'])]
+#[UniqueEntity(fields: ['position','user'], message: 'There is already a CV with this position')]
 class Cv
 {
     #[ORM\Id]
@@ -21,7 +24,7 @@ class Cv
     private ?User $user = null;
 
     #[ORM\Column]
-    private ?int $likes = null;
+    private ?int $likes = 0;
 
     public function getId(): ?int
     {
