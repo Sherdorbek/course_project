@@ -19,7 +19,7 @@
                     {% if not attributeField.vars.data.attribute.isRemovable %}
                         {% if attributeField.vars.data.attribute.type.value == 'image' %}
                             <label>{{ attributeField.vars.data.attribute.name }}</label>
-                            {{ form_widget(attributeField,{ attr: {
+                            {{ form_widget(attributeField.imageFile,{ attr: {
                                 'data-file-upload-target': 'input',
                             }}) }}
                             <img
@@ -46,7 +46,7 @@
                     {% if attributeField.vars.data.attribute.isRemovable %}
                         {% if attributeField.vars.data.attribute.type.value == 'image' %}
                             <label>{{ attributeField.vars.data.attribute.name }}</label>
-                            {{ form_widget(attributeField,{ attr: {
+                            {{ form_widget(attributeField.imageFile,{ attr: {
                                 'data-file-upload-target': 'input',
                             }}) }}
                             <img
