@@ -8,11 +8,13 @@ use App\Entity\User;
 use App\Enum\AttributeTypeEnum;
 use App\Enum\UserRoleEnum;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
     name: 'app:seed',
@@ -22,8 +24,21 @@ class SeedCommand
 {
     public function __invoke(
         SymfonyStyle $io,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        UserPasswordHasherInterface $passwordHasher,
     ): int {
+
+        $metadata = $manager
+            ->getMetadataFactory()
+            ->getAllMetadata();
+
+        $schemaTool = new SchemaTool($manager);
+
+        $schemaTool->dropSchema($metadata);
+
+        $schemaTool->createSchema($metadata);
+
+        $io->success('Database schema recreated.');
 
         $all = ['Personal information', 'Certification', 'Domain Knowledge', 'Soft skill'];
         foreach ($all as $c) {
@@ -60,7 +75,9 @@ class SeedCommand
         $admin->setProfileSetUp(false);
         $admin->setLocale('en');
         $admin->setTheme('light');
-        $admin->setPassword(bin2hex('password'));
+        $admin->setPassword(
+            $passwordHasher->hashPassword($admin, 'password')
+        );
 
         $manager->persist($admin);
         $candidate = new User();
@@ -70,7 +87,9 @@ class SeedCommand
         $candidate->setProfileSetUp(false);
         $candidate->setLocale('en');
         $candidate->setTheme('light');
-        $candidate->setPassword(bin2hex('password'));
+        $candidate->setPassword(
+            $passwordHasher->hashPassword($candidate, 'password')
+        );
 
         $manager->persist($candidate);
         $recruiter = new User();
@@ -80,11 +99,14 @@ class SeedCommand
         $recruiter->setProfileSetUp(false);
         $recruiter->setLocale('en');
         $recruiter->setTheme('light');
-        $recruiter->setPassword(bin2hex('password'));
+        $recruiter->setPassword(
+            $passwordHasher->hashPassword($recruiter, 'password')
+        );
 
         $manager->persist($recruiter);
 
         $manager->flush();
+        $io->success('Data inserted.');
         return Command::SUCCESS;
     }
 }
