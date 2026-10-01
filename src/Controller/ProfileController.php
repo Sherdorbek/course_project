@@ -54,9 +54,6 @@ final class ProfileController extends AbstractController
             return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
 
-        if (!$user->isProfileSetUp()) {
-            return $this->redirectToRoute('user_profile_setup', ['id' => $user->getId()]);
-        }
 
         $form = $this->createForm(UserProfileType::class, $user);
         $form->handleRequest($request);
