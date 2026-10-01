@@ -3,10 +3,13 @@
 namespace App\Controller\Admin\CRUD;
 
 use App\Entity\User;
+use App\Enum\UserRoleEnum;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -27,7 +30,7 @@ class UserCrudController extends AbstractCrudController
             ->update(
                 Crud::PAGE_INDEX,
                 Action::EDIT,
-                fn (Action $action) => $action->setCssClass('d-none')
+                fn(Action $action) => $action->setCssClass('d-none')
             );
     }
 
@@ -35,18 +38,21 @@ class UserCrudController extends AbstractCrudController
     {
         return $crud
             ->showEntityActionsInlined(true)
-             ->setDefaultRowAction(Action::EDIT)
-             ->setPaginatorPageSize(15);
+            ->setDefaultRowAction(Action::EDIT)
+            ->setPaginatorPageSize(15);
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id')->setDisabled(),
+            EmailField::new('email'),
+            ChoiceField::new('role')
+                ->setChoices(UserRoleEnum::cases()),
+            TextField::new('googleId', 'Platform')
+                ->formatValue(
+                    fn($value, $entity) => $entity->getGoogleId() ? 'Google' : 'Facebook'
+                )->setDisabled(),
         ];
     }
-    */
 }

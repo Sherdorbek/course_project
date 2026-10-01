@@ -3,24 +3,74 @@
 {% block title %}Cv{% endblock %}
 
 {% block body %}
-    <h1>Cv</h1>
+    <div class="container my-3 d-flex flex-column flex-md-row justify-content-center align-items-start">
+        <article class="border p-4 bg-light text-dark border-3" style="max-width:760px">
+            <div class="mx-2 d-flex flex-column flex-sm-row">
+                <div>
+                    <img class="object-fit-cover border rounded p-1" src="{{ imagepath.value|default(asset('images/default-photo.jpg')) }}" alt="" width="160" height="160">
+                </div>
+                <div class="row ms-4">
+                    <b class="fs-4">{{ firstname.value ~ ' ' ~ secondname.value }}</b>
+                    <span><i class="fa-solid fa-envelope"></i> {{ email }}</span>
+                    <span><i class="fa-solid fa-location-dot"></i> {{ location.value }}</span>
+                    <span><i class="fa-solid fa-phone"></i> {{ phonenumber.value }}</span>
+                </div>
+            </div>
+            {% for category in categories %}
+                <div class=" mt-3 mb-1">
+                    <b class="fs-4">{{ category.name }}</b>
+                </div>
+                {% for attribute in position.attributes %}
+                    {% if attribute.isRemovable and attribute.category == category %}
+                        {% set userValue = userValues[attribute.id].value|default('not defined', true) %}
+                        {% include "parts/_view-attribute.html.twig" %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ cv.id }}</td>
-            </tr>
-            <tr>
-                <th>Likes</th>
-                <td>{{ cv.likes }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <div class=" mt-3 mb-1">
+                <b class="fs-4">Projects</b>
+            </div>
+            {% set pnumber = 0 %}
+            {% for project in cv.user.projects %}
+                {% if pnumber < cv.position.projectNumber %}
+                    <div class="">
+                        <b>{{ project.name }}</b>
+                        <br>
+                        <span class="text-secondary">{{ project.date1|date('Y-m-d') ~ ' - ' ~ project.date2|date('Y-m-d') }}</span>
+                        <p>{{ project.description }}</p>
+                    </div>
+                {% endif %}
+                {% set pnumber = pnumber+1 %}
+            {% endfor %}
+        </article>
+        <div class="p-4 ms-md-2 mt-3 mt-md-0 card w-100" style="max-width: 300px;">
+            <h5>Cv details</h5>
+            <div>
+                <a href="{{ path('app_position_show', {id: position.id}) }}">
+                    <i class="fa-solid fa-briefcase"></i> {{ cv.position.title }}
+                </a>
+            </div>
 
-    <a href="{{ path('app_cv_index') }}">back to list</a>
-
-    <a href="{{ path('app_cv_edit', {'id': cv.id}) }}">edit</a>
-
-    {{ include('cv/_delete_form.html.twig') }}
+            {% if is_granted('ROLE_RECRUITER') %}
+                {% include "cv/_like.html.twig" %} 
+            {% endif %}
+            <div class="my-3">
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('user_profile', {id: cv.user.id}) }}" class="text-primary text-decoration-none"> <i class="fa-solid fa-user"></i> {{ cv.user.email }}</a>
+                {% else %}
+                    <a href="#" class="text-primary text-decoration-none"> <i class="fa-solid fa-user"></i> {{ cv.user.email }}</a>
+                {% endif %}
+            </div>
+            <div class="text-success">
+                <i class="fa-solid fa-calendar"></i> {{ cv.updatedAt|format_datetime('short', locale: 'en') }}
+            </div>
+            <div>
+                {% if is_granted('ROLE_CANDIDATE') %}
+                    <a href="{{ path('app_cv_edit', {position: cv.position.id, id: cv.id}) }}" class="btn btn-success mt-3"> <i class="fa-solid fa-pencil"></i> Edit</a>
+                    <a href="{{ path('app_cv_delete_one', {position: cv.position.id, id: cv.id}) }}" class="btn btn-danger mt-3"> <i class="fa-solid fa-trash-can"></i> Delete</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

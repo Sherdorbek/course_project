@@ -19,26 +19,50 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\UX\Turbo\TurboFrame;
 use App\Service\FilestackImageUploader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+
 
 final class ProfileController extends AbstractController
 {
+    #[IsGranted('ROLE_RECRUITER')]
+    #[Route('/profile/{id}/view', name: 'user_profile_view', methods: ["GET"])]
+    public function index(User $user): Response
+    {
+        if (!$user->isProfileSetUp()) {
+            return $this->redirectToRoute('user_profile_setup');
+        }
 
-    #[Route('/profile', name: 'user_profile', methods: ["GET", "POST"])]
-    public function index(
-        #[CurrentUser] User $user,
+        return $this->render('profile/view.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+
+    #[Route('/profile/{id}', name: 'user_profile', methods: ["GET", "POST"])]
+    public function view(
+        User $user,
         Request $request,
         EntityManagerInterface $em,
         TurboFrame $turboFrame,
         FilestackImageUploader $imageUploader,
     ): Response {
+        if (!$this->isGranted('ROLE_ADMIN') && $this->isGranted('ROLE_RECRUITER')) {
+            return $this->redirectToRoute('user_profile_view', ['id' => $this->getUser()->getId()]);
+        }
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $user) {
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
+        }
+
         if (!$user->isProfileSetUp()) {
-            return $this->redirectToRoute('user_profile_setup');
+            return $this->redirectToRoute('user_profile_setup', ['id' => $user->getId()]);
         }
 
         $form = $this->createForm(UserProfileType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             foreach ($form->get('userAttributes') as $userAttributeForm) {
                 if (!$userAttributeForm->has('imageFile')) {
                     continue;
@@ -68,52 +92,41 @@ final class ProfileController extends AbstractController
         ]);
     }
 
-    #[Route('/profile/setup', name: 'user_profile_setup')]
-    public function setup(#[CurrentUser] User $user, Request $request, EntityManagerInterface $em): Response
+    #[IsGranted('ROLE_CANDIDATE')]
+    #[Route('/profile/{id}/setup', name: 'user_profile_setup')]
+    public function setup(User $user, EntityManagerInterface $em): Response
     {
         if ($user->isProfileSetUp()) {
-            return $this->redirectToRoute('user_profile');
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
 
-        $form = $this->createForm(SetupUserType::class, $user);
-        $form->handleRequest($request);
+        $mandatoryAttrs = $em->getRepository(AttributeCv::class)->findBy(['isRemovable' => false], ['id' => 'ASC']);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $mandatoryAttrs = $em->getRepository(AttributeCv::class)->findBy(['isRemovable' => false], ['id' => 'ASC']);
-
-            foreach ($mandatoryAttrs as $attribute) {
-
-                $submittedValue = $form->get('attribute_' . $attribute->getId())->getData();
-
-                $attributeValue = new UserAttribute();
-                $attributeValue->setUser($user);
-                $attributeValue->setAttribute($attribute);
-                $attributeValue->setValue($submittedValue, $attribute->getType());
-                $user->addUserAttribute($attributeValue);
-            }
-            $user->setProfileSetUp(true);
-            $em->flush();
-
-
-            return $this->redirectToRoute('app_home');
+        foreach ($mandatoryAttrs as $attribute) {
+            $attributeValue = new UserAttribute();
+            $attributeValue->setUser($user);
+            $attributeValue->setAttribute($attribute);
+            $attributeValue->setValue(null, $attribute->getType());
+            $user->addUserAttribute($attributeValue);
         }
+        $user->setProfileSetUp(true);
+        $em->flush();
 
-        return $this->render('profile/new.html.twig', [
-            'user' => $user,
-            'form' => $form,
-        ]);
+
+        return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
     }
 
-    #[Route('/profile/attribute', name: 'user_add_attribute', methods: ["GET", "POST"])]
+    #[IsGranted('ROLE_CANDIDATE')]
+    #[Route('/profile/{id}/attribute', name: 'user_add_attribute', methods: ["GET", "POST"])]
     public function searchAttribute(
-        #[CurrentUser] User $user,
+        User $user,
         Request $request,
         AttributeCvRepository $attrManager,
         UserAttributeRepository $uaManager,
         EntityManagerInterface $em,
     ): Response {
-        if (!$user->isProfileSetUp()) {
-            return $this->redirectToRoute('user_profile_setup');
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $user) {
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
 
         if ($request->getMethod() === "POST") {
@@ -133,32 +146,36 @@ final class ProfileController extends AbstractController
             }
 
             $em->flush();
-            return $this->redirectToRoute('user_profile');
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
         $q = $request->query->get('q') ?? 0;
         $attributes = $attrManager->searchByPrefix($q);
 
         return $this->render('profile/search.html.twig', [
+            'user' => $user,
             'searchAttributes' => $attributes,
         ]);
     }
 
-     #[Route('/profile/attribute/remove', name: 'user_remove_attribute', methods: ["GET", "POST"])]
+    #[IsGranted('ROLE_CANDIDATE')]
+    #[Route('/profile/{id}/attribute/remove', name: 'user_remove_attribute', methods: ["GET", "POST"])]
     public function deleteAttribute(
-        #[CurrentUser] User $user,
+        User $user,
         Request $request,
         UserAttributeRepository $uaManager,
         EntityManagerInterface $em,
     ): Response {
-        
+        if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $user) {
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
+        }
         if ($request->getMethod() === "POST") {
             $uaIndexes = $request->request->all('selectedUserAttributes');
-            $uas = $uaManager->findBy(['id'=>$uaIndexes]);
+            $uas = $uaManager->findBy(['id' => $uaIndexes]);
             foreach ($uas as $value) {
                 $user->removeUserAttribute($value);
             }
             $em->flush();
-            return $this->redirectToRoute('user_profile');
+            return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
 
 

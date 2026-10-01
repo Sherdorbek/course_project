@@ -1,0 +1,6 @@
+<twig:Turbo:Frame id="cv-like">
+  <form action="{{ path('app_cv_likes', {position: position.id, id: cv.id}) }}" method="post">
+    <button class="btn btn-info">
+      <i class="fa-regular fa-thumbs-up"></i> {{ cv.likes|length }}</button>
+  </form>
+</twig:Turbo:Frame>

@@ -40,11 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-   
+
     /**
      * @var Collection<int, UserAttribute>
      */
-    #[ORM\OneToMany(targetEntity: UserAttribute::class, mappedBy: 'user', orphanRemoval: true,cascade:['persist'])]
+    #[ORM\OneToMany(targetEntity: UserAttribute::class, mappedBy: 'user', orphanRemoval: true, cascade: ['persist'])]
     private Collection $userAttributes;
 
     #[ORM\Column]
@@ -56,10 +56,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'user')]
     private Collection $cvs;
 
+    #[ORM\Column]
+    private ?bool $theme = null;
+
+    #[ORM\Column(length: 15)]
+    private ?string $locale = null;
+
+    /**
+     * @var Collection<int, Project>
+     */
+    #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $projects;
+
     public function __construct()
     {
         $this->userAttributes = new ArrayCollection();
         $this->cvs = new ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,7 +112,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function getRoles(): array
     {
-        return [$this->role->value];
+
+        return match ($this->role) {
+            UserRoleEnum::Recruiter => [UserRoleEnum::Recruiter->value],
+            UserRoleEnum::Candidate => [UserRoleEnum::Candidate->value],
+            UserRoleEnum::Admin => [UserRoleEnum::Recruiter->value, UserRoleEnum::Candidate->value, UserRoleEnum::Admin->value],
+        };
     }
 
     public function setRole(UserRoleEnum $role): static
@@ -226,6 +244,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($cv->getUser() === $this) {
                 $cv->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isTheme(): ?bool
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(bool $theme): static
+    {
+        $this->theme = $theme;
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): static
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Project>
+     */
+    public function getProjects(): Collection
+    {
+        return $this->projects;
+    }
+
+    public function addProject(Project $project): static
+    {
+        if (!$this->projects->contains($project)) {
+            $this->projects->add($project);
+            $project->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProject(Project $project): static
+    {
+        if ($this->projects->removeElement($project)) {
+            // set the owning side to null (unless already changed)
+            if ($project->getUser() === $this) {
+                $project->setUser(null);
             }
         }
 

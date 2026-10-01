@@ -5,15 +5,19 @@ export default class extends Controller {
 
     static values = {
         url: String,
-        fieldUrl:String
+        fieldUrl: String
     }
 
     search(e) {
+        clearTimeout(this.timeout);
         const { value } = e.target;
+        this.timeout = setTimeout(() => {
 
-        Turbo.visit(this.urlValue + '?q=' + value, {
-            frame: 'search-result'
-        });
+            Turbo.visit(this.urlValue + '?q=' + value, {
+                frame: 'search-result'
+            });
+
+        }, 500);
     }
 
 

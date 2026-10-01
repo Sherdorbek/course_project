@@ -21,11 +21,11 @@ class UserAttribute
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?AttributeCv $attribute = null;
 
     #[ORM\ManyToOne(inversedBy: 'userAttributes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -49,7 +49,7 @@ class UserAttribute
     #[ORM\Column(length: 510, nullable: true)]
     private ?string $valImage = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 1, nullable: true)]
     private ?string $valNumber = null;
 
     public function getId(): ?int

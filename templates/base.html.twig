@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html data-bs-theme="{{ app.request.cookies.get('theme', 'light') }}">
 
   <head>
     <meta charset="UTF-8">
+    <meta name="turbo-prefetch" content="false">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link
       rel="icon"
@@ -23,7 +25,7 @@
     {% endif %}
   </head>
 
-  <body>
+  <body class="bg-body-secondary">
     {% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
       {% include "parts/_nav.html.twig" %}
     {% endif %}

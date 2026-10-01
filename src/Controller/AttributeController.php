@@ -10,7 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_RECRUITER')]
 final class AttributeController extends AbstractController
 {
     #[Route('/attributes', name: 'app_attributes')]
@@ -55,6 +57,10 @@ final class AttributeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!$attr->isRemovable()){
+                $this->addFlash('notice','You can not edit this attribute');
+                return $this->redirectToRoute('app_attributes');
+            }
             $manager->flush();
 
             return $this->redirectToRoute('app_attributes');
@@ -93,20 +99,4 @@ final class AttributeController extends AbstractController
         return $this->redirect('app_attributes');
     }
 
-    #[Route('/attribute/{id<\d+>}/delete', name: 'app_attribute_delete')]
-    public function delete(AttributeCv $attr, Request $request, EntityManagerInterface $manager): Response
-    {
-        if ($request->isMethod('POST')) {
-            $manager->remove($attr);
-            $manager->flush();
-
-            $this->addFlash('notice', 'Product deleted successfully');
-
-            return $this->redirectToRoute('product_index');
-        }
-
-        return $this->render('product/delete.html.twig', [
-            'id' => $attr->getId(),
-        ]);
-    }
 }

@@ -4,51 +4,59 @@
 
 {% block body %}
 
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow" style="max-width: 420px; width: 100%;">
-        <div class="card-body p-4">
-            <h4 class="text-center mb-4">Log in to your account</h4>
-            {% if app.user %}
-                <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <div>You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a></div>
-                </div>
+    <div  data-turbo="false" class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow" style="max-width: 420px; width: 100%;">
+            <div class="card-body p-4">
+                <h4 class="text-center mb-4">Log in to your account</h4>
+                {% if app.user %}
+                    <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div>You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a></div>
+                    </div>
                     
-            {% endif %}
+                {% endif %}
 
-            {% if error %}
-                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-                    <i class="bi bi-exclamation-circle-fill mt-1"></i>
-                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                </div>
-            {% endif %}
+                {% if error %}
+                    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                        <i class="bi bi-exclamation-circle-fill mt-1"></i>
+                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    </div>
+                {% endif %}
 
-            <div class="d-grid gap-2 mb-3">
-                <a href="{{ path('connect_google_start') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2">
-                    <i class="bi bi-google"></i> Log in with Google
-                </a>
-                <a href="{{ path('connect_facebook_start') }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 py-2">
-                    <i class="bi bi-facebook"></i> Log in with Facebook
-                </a>
+
+                <form method="post" data-turbo="false">
+                    <div class="mb-3">
+                        <label for="inputEmail" class="form-label">Email address</label>
+                        <input type="email" id="inputEmail" name="_username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputPassword" class="form-label">Password</label>
+                        <input type="password" id="inputPassword" name="_password" class="form-control" required>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button type="submit" class="btn btn-primary w-100">Log in</button>
+                </form>
                 
+                <div class="d-flex align-items-center gap-3">
+                    <hr class="flex-grow-1">
+                    <span>or</span>
+                    <hr class="flex-grow-1">
+                </div>
+
+
+                <div class="d-grid gap-2 mb-3">
+                    <a href="{{ path('connect_google_start') }}" class="btn btn-emphasis border shadow-sm text-danger d-flex align-items-center justify-content-center gap-2 py-2">
+                        <i class="fa-brands fa-google"></i> Log in with Google
+                    </a>
+                    <a href="{{ path('connect_facebook_start') }}" class="btn btn-emphasis border shadow-sm text-primary d-flex align-items-center justify-content-center gap-2 py-2">
+                        <i class="fa-brands fa-facebook"></i> Log in with Facebook
+                    </a>
+                
+                </div>
+
             </div>
-
-            <hr class="my-4">
-
-            <form method="post">
-                <div class="mb-3">
-                    <label for="inputEmail" class="form-label">Email address</label>
-                    <input type="email" id="inputEmail" name="email" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="inputPassword" class="form-label">Password</label>
-                    <input type="password" id="inputPassword" name="password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Log in</button>
-            </form>
         </div>
     </div>
-</div>
 
             
         

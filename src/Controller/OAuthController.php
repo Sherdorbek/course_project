@@ -20,7 +20,7 @@ final class OAuthController extends AbstractController
     {
         return $clientRegistry
             ->getClient('google')
-            ->redirect();
+            ->redirect([],[]);
     }
 
     #[Route('/connect/facebook', name: 'connect_facebook_start')]
@@ -28,7 +28,7 @@ final class OAuthController extends AbstractController
     {
         return $clientRegistry
             ->getClient('facebook')
-            ->redirect();
+            ->redirect([],[]);
     }
 
     #[Route('/connect/google/check', name: 'connect_google_check')]
@@ -36,7 +36,6 @@ final class OAuthController extends AbstractController
         ClientRegistry $clientRegistry,
         EntityManagerInterface $entityManager,
         Security $security,
-        AttributeCvRepository $attributeRepo
     ) {
         $client = $clientRegistry->getClient('google');
 
@@ -60,6 +59,8 @@ final class OAuthController extends AbstractController
             $user->setEmail($email);
             $user->setRole(UserRoleEnum::Candidate);
             $user->setProfileSetUp(false);
+            $user->setLocale('en');
+            $user->setTheme('light');
             $user->setPassword(bin2hex(random_bytes(32)));
 
             $entityManager->persist($user);

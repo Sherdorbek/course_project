@@ -1,41 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block body %}
 
-    <div class="container" data-controller="autosave">
-        
-                
-        {{ include('profile/_form.html.twig', { user: user, form: form }) }}
+    <div class="container" data-controller="autosave" style="max-width:900px">
+        <div class="p-2 border rounded bg-body-tertiary mb-3 d-flex justify-content-around" data-contoller="scroll" data-turbo="false">
+            <a class="btn flex-fill" data-action="click->scroll#scrollTo" href="#profile-me"><i class="fa-solid fa-circle-user"></i> Me</a>
+            <a class="btn flex-fill" data-action="click->scroll#scrollTo" href="#profile-attributes"><i class="fa-solid fa-circle-info"></i> Info</a>
+            <a class="btn flex-fill" data-action="click->scroll#scrollTo" href="#profile-projects"><i class="fa-regular fa-folder-open"></i> Projects</a>
+            <a class="btn flex-fill" data-action="click->scroll#scrollTo" href="#profile-cvs"><i class="fa-regular fa-file-lines"></i> CVs</a>                
+        </div>
+        <div>       
+            {{ include('profile/_form.html.twig', { user: user, form: form }) }}
         
 
-        <div class="my-2">  
-            <a class="btn btn-primary" href="{{ path('user_add_attribute') }}"><i class="fa-solid fa-plus"></i> Add Attribute</a>
-            <a class="btn btn-danger" href="{{ path('user_remove_attribute') }}"><i class="fa-regular fa-trash-can"></i> Remove Attribute</a>
-        </div>
-      
-        <div class="card my-4">
-            <div class="card-body">  
-                <div class="d-flex justify-content-between align-items-center">     
-                    <h3 class="card-title mb-0"><i class="fa-regular fa-folder-open"></i>Projects</h3>
-                </div>  
+            <div class="my-2">  
+                <a class="btn btn-primary" href="{{ path('user_add_attribute', {id: user.id}) }}"><i class="fa-solid fa-plus"></i> Add Attribute</a>
+                <a class="btn btn-danger" href="{{ path('user_remove_attribute', {id: user.id}) }}"><i class="fa-regular fa-trash-can"></i> Remove Attribute</a>
+            </div>
+
+            <div class="card my-4" id="profile-cvs">
+                <div class="card-body">  
+                    <div class="d-flex justify-content-between align-items-center">     
+                        <h4 class="card-title mb-0"><i class="fa-regular fa-folder-open"></i>Projects</h4>
+                    </div>
+
+                    <div class="tabel-responsive mt-2">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Period</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for project in user.projects %}
+                                    <tr>
+                                        <td><a href="{{ path('app_project_edit', {user: user.id, id: project.id}) }}">{{ project.name }}</a></td>
+                                        <td>{{ project.description|u.truncate(50, '...', false) }}</td>
+                                        <td>{{ project.date1|date('Y-d-m') ~ ' - ' ~ project.date2|date('Y-d-m') }}</td>
+                                    </tr>
+                                {% endfor %} 
+                            </tbody>
+                        </table>
+                       
+                    </div>  
+                </div>
+                <div class="m-3">  
+                    <a class="btn btn-primary" href="{{ path('app_project_new', {user: user.id}) }}"><i class="fa-solid fa-plus"></i> Add Project</a>
+                </div>
             </div>
         </div>
-
-        <div class="card my-4">
+        
+        <div class="card my-4" id="profile-cvs">
             <div class="card-body">  
                 <div class="d-flex justify-content-between align-items-center">     
-                    <h3 class="card-title mb-0"><i class="fa-regular fa-file-lines"></i> Cvs</h3>
+                    <h4 class="card-title mb-0"><i class="fa-regular fa-file-lines"></i> Cvs</h4>
                 </div>
 
-                <div>
-                    {% for cv in user.cvs %}
-                        {{ cv.position.title }}
-                    {% endfor %}
+                <div class="tabel-responsive mt-2">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Position</th>
+                                <th scope="col">Likes</th>
+                                <th scope="col">Updated At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cv in user.cvs %}
+                                <tr>
+                                    <td><a href="{{ path('app_cv_show', {position: cv.position.id, id: cv.id}) }}">{{ cv.position.title }}</a></td>
+                                    <td>{{ cv.likes|length }}</td>
+                                    <td>{{ cv.updatedAt|date('Y-d-m') }}</td>
+                                </tr>
+                            {% endfor %} 
+                        </tbody>
+                    </table>
+                       
                 </div>  
             </div>
         </div>
+    </div>
         
         
     </div>

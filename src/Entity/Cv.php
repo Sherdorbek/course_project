@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CvRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -23,8 +25,19 @@ class Cv
     #[ORM\ManyToOne(inversedBy: 'cvs')]
     private ?User $user = null;
 
+    /**
+     * @var Collection<int, Likes>
+     */
+    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'cv',orphanRemoval:true)]
+    private Collection $likes;
+
     #[ORM\Column]
-    private ?int $likes = 0;
+    private ?\DateTime $updatedAt = null;
+
+    public function __construct()
+    {
+        $this->likes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -55,14 +68,43 @@ class Cv
         return $this;
     }
 
-    public function getLikes(): ?int
+    /**
+     * @return Collection<int, Likes>
+     */
+    public function getLikes(): Collection
     {
         return $this->likes;
     }
 
-    public function setLikes(int $likes): static
+    public function addLikes(Likes $likes): static
     {
-        $this->likes = $likes;
+        if (!$this->likes->contains($likes)) {
+            $this->likes->add($likes);
+            $likes->setCv($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikes(Likes $likes): static
+    {
+        if ($this->likes->removeElement($likes)) {
+            if ($likes->getCv() === $this) {
+                $likes->setCv(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

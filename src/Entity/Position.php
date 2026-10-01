@@ -37,6 +37,9 @@ class Position
     #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'position', orphanRemoval: true)]
     private Collection $cvs;
 
+    #[ORM\Column]
+    private ?int $projectNumber = null;
+
    
     public function __construct()
     {
@@ -136,6 +139,18 @@ class Position
                 $cv->setPosition(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProjectNumber(): ?int
+    {
+        return $this->projectNumber;
+    }
+
+    public function setProjectNumber(int $projectNumber): static
+    {
+        $this->projectNumber = $projectNumber;
 
         return $this;
     }

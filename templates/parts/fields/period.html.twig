@@ -2,8 +2,18 @@
   <label for="text" class="form-label">{{ attribute.name }}</label>
   <div class="input-group mb-3">
     <span class="input-group-text">From</span>
-    <input type="date" class="form-control" name="attribute[{{attribute.id}}][0]" value="{{value[0]|date('Y-m-d')}}">
+    <input
+      type="date"
+      class="form-control"
+      name="attribute[{{ attribute.id }}][0]"
+      value="{{ value[0]|default(null) ? value[0]|date('Y-m-d') : '' }}"
+    >
     <span class="input-group-text">To</span>
-    <input type="date" class="form-control" name="attribute[{{attribute.id}}][1]" value="{{value[1]|date('Y-m-d')}}">
+    <input
+      type="date"
+      class="form-control"
+      name="attribute[{{ attribute.id }}][1]"
+      value="{{ value[0]|default(null) ? value[1]|date('Y-m-d') : '' }}"
+    >
   </div>
 </div>

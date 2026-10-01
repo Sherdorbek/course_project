@@ -3,86 +3,87 @@
 {% block title %}Edit Position{% endblock %}
 
 {% block body %}
-
-    <div class="container  border shadow rounded my-3 p-4" data-controller="selected-attributes">
-        <div class="d-flex flex-row justify-content-between">
-            <h5 class="card-title mb-3">3. Selected Attributes</h5>
+    <div class="container">
+        <div class="card my-3 p-4" data-controller="selected-attributes">
+            <div class="d-flex flex-row justify-content-between">
+                <h5 class="card-title mb-3">Selected Attributes</h5>
     
-            <div class="d-none" data-selected-attributes-target="delete">
-                <button
-                    class="btn btn-primary"
-                    type="button"
-                    data-action="click->selected-attributes#removeAttribute"
-                >Delete</button>
+                <div class="d-none" data-selected-attributes-target="delete">
+                    <button
+                        class="btn btn-danger"
+                        type="button"
+                        data-action="click->selected-attributes#removeAttribute"
+                    >Delete</button>
+                </div>
             </div>
-        </div>
     
-        <table class="d-none">
-            <tbody>
-                <tr id="template-attribute">
-                    <td>
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            data-checkbox-target="checkbox"
-                            data-selected-attributes-target="checkbox"
-                            data-action="change->selected-attributes#toggleDelete"
-                        >
-                    </td>
-                    <td class="attribute-name"></td>
-                    <td class="attribute-category"></td>
-                    <td class="attribute-type"></td>
-                    <input type="hidden" class="form-control" name="positionAttributes[]"/>
-                </tr>
-            </tbody>
-        </table>
-        
-        <form method="post" action="{{ path('app_position_edit_attributes', {id: position.id}) }}">
-            <table class="table table-hover align-middle mb-0" data-controller="checkbox">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col" style="width: 40px;">
+            <table class="d-none">
+                <tbody>
+                    <tr id="template-attribute">
+                        <td>
                             <input
                                 class="form-check-input"
                                 type="checkbox"
-                                data-action="change->checkbox#toggle change->selected-attributes#toggleDelete"
+                                data-checkbox-target="checkbox"
+                                data-selected-attributes-target="checkbox"
+                                data-action="change->selected-attributes#toggleDelete"
                             >
-                        </th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Category</th>
-                        <th scope="col">Type</th>
+                        </td>
+                        <td class="attribute-name"></td>
+                        <td class="attribute-category"></td>
+                        <td class="attribute-type"></td>
+                        <input type="hidden" class="form-control" name="positionAttributes[]"/>
                     </tr>
-                </thead>
-                <tbody id="selectedParent">
-               
-                    {% if position.attributes is not empty %}                
-                        {% for attribute in position.attributes %}
-                            <tr id="selected-attribute-row-{{ attribute.id }}">
-                                <td>
-                                    <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        value="{{ attribute.id }}"
-                                        data-checkbox-target="checkbox"
-                                        data-selected-attributes-target="checkbox"
-                                        data-action="change->selected-attributes#toggleDelete"
-                                    >
-                                </td>
-                                <td>{{ attribute.name }}</td>
-                                <td>{{ attribute.category.name }}</td>
-                                <td>{{ attribute.type.name }}</td>
-                                <input type="hidden" class="form-control" name="positionAttributes[]" value="{{ attribute.id }}"/>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">No attributes added yet.</td>
-                            </tr>
-                        {% endfor %}
-                    {% endif %}
                 </tbody>
             </table>
-            <button class="btn btn-primary my-2" type="submit">Save</button>
-        </form>
+        
+            <form method="post" action="{{ path('app_position_edit_attributes', {id: position.id}) }}">
+                <table class="table table-hover align-middle mb-0" data-controller="checkbox">
+                    <thead class="">
+                        <tr>
+                            <th scope="col" style="width: 40px;">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    data-action="change->checkbox#toggle change->selected-attributes#toggleDelete"
+                                >
+                            </th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedParent">
+               
+                        {% if position.attributes is not empty %}                
+                            {% for attribute in position.attributes %}
+                                <tr id="selected-attribute-row-{{ attribute.id }}">
+                                    <td>
+                                        <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            value="{{ attribute.id }}"
+                                            data-checkbox-target="checkbox"
+                                            data-selected-attributes-target="checkbox"
+                                            data-action="change->selected-attributes#toggleDelete"
+                                        >
+                                    </td>
+                                    <td>{{ attribute.name }}</td>
+                                    <td>{{ attribute.category.name }}</td>
+                                    <td>{{ attribute.type.name }}</td>
+                                    <input type="hidden" class="form-control" name="positionAttributes[]" value="{{ attribute.id }}"/>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No attributes added yet.</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+                <button class="btn btn-primary my-2" type="submit">Save</button>
+            </form>
+        </div>
     </div>
     {% include "position/_search.html.twig" %}
 

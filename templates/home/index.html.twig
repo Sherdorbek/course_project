@@ -1,21 +1,109 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
 
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card text-center bg-success-subtle h-100">
+                    <div class="card-body py-3 px-4 fs-3">
+                        <div>
+                            <i class="fa-solid fa-briefcase"></i> {{ positionNumber }}
+                        </div>
+                        <span class="fs-5">Positions</span>
+                    </div>
+                </div>
+            </div>
 
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card text-center bg-warning-subtle h-100">
+                    <div class="card-body py-3 px-4 fs-3">
+                        <div>
+                            <i class="fa-solid fa-briefcase"></i> {{ cvNumber }}
+                        </div>
+                        <span class="fs-5">CVs</span>
+                    </div>
+                </div>
+            </div>
 
-<div class="example-wrapper">
-    <h1>Welcome ✅</h1>
-    {% if app.user %}
-    {{ app.user.email }}
-  
-    {% endif %}
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card text-center bg-primary-subtle h-100">
+                    <div class="card-body py-3 px-4 fs-3">
+                        <div>
+                            <i class="fa-solid fa-user-group"></i> {{ candidateNumber }}
+                        </div>
+                        <span class="fs-5">Candidates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-3">
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <b>Recent Positions</b>
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Cvs</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Updated at</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for position in positions %}
+                                    <tr>
+                                        <td>{{ position.title }}</td>
+                                        <td>{{ position.cvs|length }}</td>
+                                        <td>{{ position.description|u.truncate(50, '...', false) }}</td>
+                                        <td>{{ position.updatedAt|date('Y-m-d') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">No attributes found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-</div>
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <b>Popular Positions</b>
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Cvs</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Updated at</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for position in popularPositions %}
+                                    <tr>
+                                        <td>{{ position.title }}</td>
+                                        <td>{{ position.cvs|length }}</td>
+                                        <td>{{ position.description|u.truncate(50, '...', false) }}</td>
+                                        <td>{{ position.updatedAt|date('Y-m-d') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">No attributes found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

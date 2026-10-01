@@ -1,0 +1,45 @@
+<div>
+  <span class="fs-5">{{ attribute.name }} : </span> 
+  {% if userValue == 'not defined' and attribute.type.value != 'boolean' %}
+
+    <u class="text-danger">{{ userValue }}</u>
+
+  {% elseif attribute.type.value == 'date' %}
+
+    {{ userValue|date('Y-m-d') }}
+
+  {% elseif attribute.type.value == 'period' %}
+
+    {{ userValue[0]|date('Y-m-d') }} <i class="fa-solid fa-angles-right"></i> {{ userValue[1]|date('Y-m-d') }}
+
+  {% elseif attribute.type.value == 'boolean' %}
+
+    {% if userValue %}
+      <i class="fa-regular fa-circle-check"></i> Yes
+    {% else %}
+      <i class="fa-regular fa-circle-xmark"></i> No
+    {% endif %}
+   
+  {% elseif attribute.type.value == 'text' %}
+
+    <p>{{ userValue }}</p>
+
+  {% elseif attribute.type.value == 'one_of_many' %}
+
+    {% for option in attribute.oneOfManies %}
+      {% if option.id == userValue %}
+        {{ option.value }}
+      {% endif %}
+    {% endfor %}
+
+  {% elseif attribute.type.value == 'image' %}
+
+    <img src="{{ userValue }}" alt="">
+
+  {% else %}
+
+    {{ userValue }}
+
+  {% endif %}
+                    
+</div>
