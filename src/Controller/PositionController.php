@@ -39,6 +39,7 @@ final class PositionController extends AbstractController
                 $position->addAttribute($attribute);
             }
             $position->setUpdatedAt(new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tashkent')));
+            $position->setAccessToken(bin2hex(random_bytes(32)));
             $entityManager->persist($position);
 
             $entityManager->flush();

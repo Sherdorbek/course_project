@@ -40,6 +40,9 @@ class Position
     #[ORM\Column]
     private ?int $projectNumber = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $accessToken = null;
+
    
     public function __construct()
     {
@@ -151,6 +154,18 @@ class Position
     public function setProjectNumber(int $projectNumber): static
     {
         $this->projectNumber = $projectNumber;
+
+        return $this;
+    }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->accessToken;
+    }
+
+    public function setAccessToken(string $accessToken): static
+    {
+        $this->accessToken = $accessToken;
 
         return $this;
     }

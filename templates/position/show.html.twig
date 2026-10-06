@@ -37,7 +37,7 @@
                         <th>Description</th>
                         <td>{{ position.description }}</td>
                     </tr>
-                     <tr>
+                    <tr>
                         <th>Number of projects</th>
                         <td>{{ position.projectNumber }}</td>
                     </tr>
@@ -50,7 +50,35 @@
             {% if is_granted('ROLE_RECRUITER') %}
                 <div>
                     <a class="btn btn-primary" href="{{ path('app_position_edit', {'id': position.id}) }}">Edit</a>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        View access token
+                    </button>
+
                 </div>
+                
+                
+
+                <!-- Modal -->
+                <div data-controller="copy" class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Access token for this Position</h1>
+                                <button data-action="click->copy#reset" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" data-copy-target="text">
+                                {{ position.accessToken }}
+                            </div>
+                            <div class="modal-footer">
+                                <button data-action="click->copy#copy" data-copy-target="btn" type="button" class="btn btn-primary">
+                                    <i class="fa-regular fa-clipboard"></i>
+                                    <span data-copy-target="btnText">Copy</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             {% endif %}
         </div>
         <div class="card p-4 mt-4">
