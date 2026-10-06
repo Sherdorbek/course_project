@@ -68,6 +68,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $projects;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $SalesForceId = null;
+
     public function __construct()
     {
         $this->userAttributes = new ArrayCollection();
@@ -186,6 +189,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->userAttributes;
     }
 
+    public function getUserAttribute(int $id): mixed
+    {
+        foreach ($this->userAttributes as $ua) {
+            if ($ua->getAttribute()->getId() === $id){
+                return $ua->getValue();        
+            }
+        }
+        return null;
+    }
+
     public function addUserAttribute(UserAttribute $userAttribute): static
     {
         if (!$this->userAttributes->contains($userAttribute)) {
@@ -300,6 +313,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $project->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSalesForceId(): ?string
+    {
+        return $this->SalesForceId;
+    }
+
+    public function setSalesForceId(?string $SalesForceId): static
+    {
+        $this->SalesForceId = $SalesForceId;
 
         return $this;
     }

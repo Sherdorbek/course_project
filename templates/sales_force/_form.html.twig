@@ -1,0 +1,16 @@
+<div class="card py-3 px-4">
+    <b class="mb-2">Additional information</b>
+    {{ form_start(form, {
+        attr: {
+            novalidate: 'novalidate',
+        }
+    }) }}
+
+    {{ form_row(form.jobTitle) }}
+    {{ form_row(form.birthdate) }}
+    {{ form_row(form.homePhone) }}
+    {{ form_row(form.description) }}
+
+    {{ form_end(form) }}
+
+</div>

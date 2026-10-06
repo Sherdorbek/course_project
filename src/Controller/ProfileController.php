@@ -53,6 +53,9 @@ final class ProfileController extends AbstractController
         if (!$this->isGranted('ROLE_ADMIN') && $this->getUser() !== $user) {
             return $this->redirectToRoute('user_profile', ['id' => $this->getUser()->getId()]);
         }
+        if (!$user->isProfileSetUp()) {
+            return $this->redirectToRoute('user_profile_setup', ['id' => $this->getUser()->getId()]);
+        }
 
 
         $form = $this->createForm(UserProfileType::class, $user);

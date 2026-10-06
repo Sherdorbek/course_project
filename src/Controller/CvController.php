@@ -109,6 +109,7 @@ final class CvController extends AbstractController
             $position->addCv($cv);
             $cv->setUser($user);
             $user->addCv($cv);
+            $user->setProfileSetUp(true);
             $entityManager->persist($cv);
 
             $entityManager->flush();
