@@ -7,6 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: PositionRepository::class)]
 class Position
@@ -14,6 +17,7 @@ class Position
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Ignore]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -35,20 +39,21 @@ class Position
      * @var Collection<int, Cv>
      */
     #[ORM\OneToMany(targetEntity: Cv::class, mappedBy: 'position', orphanRemoval: true)]
+    #[Ignore]
     private Collection $cvs;
 
     #[ORM\Column]
     private ?int $projectNumber = null;
 
     #[ORM\Column(length: 255)]
+    #[Ignore]
     private ?string $accessToken = null;
 
-   
+
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
         $this->cvs = new ArrayCollection();
- 
     }
 
     public function getId(): ?int
@@ -170,9 +175,15 @@ class Position
         return $this;
     }
 
-   
 
-
-
-   
+    #[Groups(['position:read'])]
+    #[SerializedName('users')]
+    public function getCvsUsersId(): ?array
+    {
+        $users= [];
+        foreach ($this->cvs as $cv) {
+            array_push($users,$cv->getUser()->getId());
+        }
+        return $users;
+    }
 }

@@ -7,31 +7,39 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: CvRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_CV', fields: ['position','user'])]
-#[UniqueEntity(fields: ['position','user'], message: 'There is already a CV with this position')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_CV', fields: ['position', 'user'])]
+#[UniqueEntity(fields: ['position', 'user'], message: 'There is already a CV with this position')]
 class Cv
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Ignore]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'cvs')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?Position $position = null;
 
     #[ORM\ManyToOne(inversedBy: 'cvs')]
+    #[Ignore]
     private ?User $user = null;
 
     /**
      * @var Collection<int, Likes>
      */
-    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'cv',orphanRemoval:true)]
+    #[ORM\OneToMany(targetEntity: Likes::class, mappedBy: 'cv', orphanRemoval: true)]
+    #[Ignore]
     private Collection $likes;
 
     #[ORM\Column]
+    #[Ignore]
     private ?\DateTime $updatedAt = null;
 
     public function __construct()
@@ -59,6 +67,13 @@ class Cv
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    #[Groups(['position:read'])]
+    #[SerializedName('userId')]
+    public function getUserId(): ?int
+    {
+        return $this->user->getId();
     }
 
     public function setUser(?User $user): static

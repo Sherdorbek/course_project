@@ -4,11 +4,15 @@ namespace App\Entity;
 
 use App\Enum\AttributeTypeEnum;
 use App\Repository\AttributeCvRepository;
+use App\Repository\UserAttributeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -26,6 +30,7 @@ class AttributeCv
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?AttributeCategory $category = null;
 
     #[ORM\Column(length: 255)]
@@ -45,9 +50,11 @@ class AttributeCv
     private Collection $oneOfManies;
 
     #[ORM\Column]
+    #[Ignore]
     private ?bool $isRemovable = true;
 
     #[ORM\Column]
+    #[Ignore]
     private ?int $version = 0;
 
     public function __construct()
@@ -58,6 +65,13 @@ class AttributeCv
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    #[Groups(['position:read'])]
+    #[SerializedName('categoryName')]
+    public function getCategoryName(): ?string
+    {
+        return $this->category?->getName();
     }
 
     public function getCategory(): ?AttributeCategory
@@ -142,7 +156,7 @@ class AttributeCv
                 ->addViolation();
         }
     }
-
+    #[Ignore]
     public function isRemovable(): ?bool
     {
         return $this->isRemovable;

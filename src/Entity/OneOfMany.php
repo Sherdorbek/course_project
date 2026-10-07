@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OneOfManyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -21,6 +22,7 @@ class OneOfMany
 
     #[ORM\ManyToOne(inversedBy: 'oneOfManies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
     private ?AttributeCv $attribute = null;
 
     public function getId(): ?int
